@@ -9,11 +9,11 @@
 
 ## Build With
 
-* [PHP 7.3.27] (https://php.net) - The web language used
+* [PHP 7.3.27](https://php.net) - The web language used
 * [Laravel 7.x](https://laravel.com) - The web framework used
 * [Composer v2.0.9](https://getcomposer.org) - Dependency Management
-* [Spattie] (https://github.com/spatie/laravel-permission) - Associate users with roles and permissions
-* [Prettus 2.7] (https://github.com/andersao/l5-repository) - Repositories to abstract the database layer
+* [Spattie](https://github.com/spatie/laravel-permission) - Associate users with roles and permissions
+* [Prettus 2.7](https://github.com/andersao/l5-repository) - Repositories to abstract the database layer
 
 ## Pre Requisite
 
@@ -24,8 +24,9 @@
 
     App
     ├── Commands                # Generated Custom Command Files
-        ├── Generator           # Generator Setting Files
         ├── Stub                # Templating Files
+        ├── (other files)       # Generator Setting Files
+
     ├── Modules
         ├── (name)              # Base and Common dir are root Templates
             ├── Api             # Action and Response method, Basically No Changes in here
@@ -63,7 +64,7 @@
   generate:api <name> -i          # Generate Index Resources (Api Only)
   generate:domain <name> -l       # Generate List Resources (Domain Only)
   
-   _*Filter Files will auto generated_
+  Filter Files will auto generated
   ```
   
   #### Generate Repository
