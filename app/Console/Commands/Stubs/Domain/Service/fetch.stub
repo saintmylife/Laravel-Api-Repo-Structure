@@ -1,0 +1,33 @@
+<?php
+
+namespace {{ namespace }};
+
+use App\Modules\Base\Domain\BaseService;
+use App\Modules\Common\Domain\Payload;
+use App\Modules\{{ arg_name }}\{{ arg_name }}Dto;
+use App\Modules\{{ arg_name }}\Repository\{{ arg_name }}RepositoryInterface;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+
+/**
+ * {{ arg_name }} delete
+ */
+class {{ arg_name }}Fetch extends BaseService
+{
+    private ${{ strtolower(arg_name) }}Repo;
+
+    public function __construct({{ arg_name }}RepositoryInterface ${{ strtolower(arg_name) }}Repo)
+    {
+        $this->{{ strtolower(arg_name) }}Repo = ${{ strtolower(arg_name) }}Repo;
+    }
+
+    public function __invoke(int $id): Payload
+    {
+        try {
+            $data = $this->{{ strtolower(arg_name) }}Repo->with(['user_info'])->find($id);
+            $data->getAllPermissions();
+            return $this->newPayload(Payload::STATUS_FOUND, compact('data'));
+        } catch (ModelNotFoundException $e) {
+            return $this->newPayload(Payload::STATUS_NOT_FOUND, compact('id'));
+        }
+    }
+}
