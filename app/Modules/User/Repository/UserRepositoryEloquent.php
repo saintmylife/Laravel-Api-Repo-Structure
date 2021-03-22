@@ -2,7 +2,7 @@
 
 namespace App\Modules\User\Repository;
 
-use App\User;
+use App\Modules\User\User;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 
