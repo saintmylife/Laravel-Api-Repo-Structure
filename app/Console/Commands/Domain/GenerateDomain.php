@@ -15,7 +15,7 @@ class GenerateDomain extends Command
      * @var string
      */
     protected $signature = 'generate:domain {name : Define Domain Name}
-                            {--a|all : All Domain Resources}
+                            {--a|all=default : All Domain Resources}
                             {--c|create : Service Create Resource}
                             {--d|delete : Service Delete Resource}
                             {--e|edit : Service Edit Resource}
