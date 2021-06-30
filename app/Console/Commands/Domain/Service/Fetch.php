@@ -41,7 +41,7 @@ class Fetch extends GeneratorCommand
             $name = Str::before($this->argument('name'), 'Fetch');
         }
         $stub = str_replace(['{{ arg_name }}'], $name, $stub);
-        return str_replace(['{{ strtolower(arg_name) }}'], Str::lower($name), $stub);
+        return str_replace(['{{ strtolower(arg_name) }}'], Str::camel($name), $stub);
     }
     /**
      * Get the stub file for the generator.

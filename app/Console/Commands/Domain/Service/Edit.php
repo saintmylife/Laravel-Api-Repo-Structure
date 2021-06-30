@@ -41,7 +41,7 @@ class Edit extends GeneratorCommand
         }
         $stub = parent::replaceClass($stub, $name);
         $stub = str_replace(['{{ arg_name }}'], $name, $stub);
-        return str_replace(['{{ strtolower(arg_name) }}'], Str::lower($name), $stub);
+        return str_replace(['{{ strtolower(arg_name) }}'], Str::camel($name), $stub);
     }
     /**
      * Get the stub file for the generator.
