@@ -7,6 +7,8 @@ use App\Modules\Common\Domain\Payload;
 use App\Modules\{{ arg_name }}\{{ arg_name }}Dto;
 use App\Modules\{{ arg_name }}\Repository\{{ arg_name }}RepositoryInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Gate;
+use \Illuminate\Auth\Access\AuthorizationException;
 
 /**
  * {{ arg_name }} delete
@@ -24,10 +26,14 @@ class {{ arg_name }}Fetch extends BaseService
     {
         try {
             $data = $this->{{ strtolower(arg_name) }}Repo->find($id);
-            $data->getAllPermissions();
-            return $this->newPayload(Payload::STATUS_FOUND, compact('data'));
         } catch (ModelNotFoundException $e) {
             return $this->newPayload(Payload::STATUS_NOT_FOUND, compact('id'));
         }
+        try {
+            Gate::authorize('owner', $data->user_id);
+        } catch (AuthorizationException $e) {
+            return $this->newPayload(Payload::STATUS_UNAUTHORIZED);
+        }
+        return $this->newPayload(Payload::STATUS_FOUND, compact('data'));
     }
 }

@@ -52,6 +52,68 @@ abstract class BaseResponder
         $this->renderResult();
     }
 
+    protected function notCreated(): void
+    {
+        $this->response = response()
+            ->json([
+                'status'    => true,
+                'messages'  => 'Data Not Created'
+            ], 501);
+    }
+
+    protected function notUpdated(): void
+    {
+        $this->response = response()
+            ->json([
+                'status'    => true,
+                'messages'  => 'Data Not Updated'
+            ], 501);
+    }
+
+    protected function notDeleted(): void
+    {
+        $this->response = response()
+            ->json([
+                'status'    => true,
+                'messages'  => 'Data Not Deleted'
+            ], 410);
+    }
+
+    protected function verified(): void
+    {
+        $this->response = response()
+            ->json([
+                'status'    => true,
+                'messages'  => 'Success Verify Your Account'
+            ]);
+    }
+
+    protected function alreadyVerified(): void
+    {
+        $this->response = response()
+            ->json([
+                'status'    => true,
+                'messages'  => 'Your Account is Already Verified'
+            ],501);
+    }
+    protected function resendVerified(): void
+    {
+        $this->response = response()
+            ->json([
+                'status'    => true,
+                'data'      => $this->payload->getResult()['data'],
+                'messages'  => 'Please Check Your Email to Verify Your Account'
+            ]);
+    }
+    protected function verifiedFailed(): void
+    {
+        $this->response = response()
+            ->json([
+                'status'    => false,
+                'messages'  => 'Invalid or Expired OTP Provided'
+            ],401)
+        ;
+    }
     protected function notValid(): void
     {
         $this->response = response()
@@ -72,6 +134,79 @@ abstract class BaseResponder
             ], 404)
         );
     }
+    protected function notFoundParams(): void
+    {
+        $this->response = abort(
+            response()->json([
+                'status'    => false,
+                'messages'  => 'Params : ' . $this->payload->getResult()['params'] . ' not found !!',
+                'data'      => []
+            ], 404)
+        );
+    }
+
+
+    protected function emailNotFound(): void
+    {
+        $this->response = abort(
+            response()->json([
+                'status'    => false,
+                'messages'  => 'Email : ' . $this->payload->getResult()['data']['email'] . ' not found !!',
+                'data'      => []
+            ], 404)
+        );
+    }
+
+    protected function forgetPassword(): void
+    {
+        $this->response = abort(
+            response()->json([
+                'status'    => true,
+                'data'      => $this->payload->getResult()['data'],
+                'messages'  => 'Please Check Your Email to Reset Password for Your Account'
+            ])
+        );
+    }
+
+    protected function resetPasswordFailed(): void
+    {
+        $this->response = abort(
+            response()->json([
+                'status'    => false,
+                'messages'  => 'Invalid Token'
+            ], 400)
+        );
+    }
+
+    protected function resetPasswordSuccess(): void
+    {
+        $this->response = abort(
+            response()->json([
+                'status'    => true,
+                'messages'  => 'Your Password Has been Reseted.'
+            ], 400)
+        );
+    }
+
+    protected function changePasswordFailed(): void
+    {
+        $this->response = abort(
+            response()->json([
+                'status'    => false,
+                'messages'  => 'Your Old Password is Incorect.'
+            ],501)
+        );
+    }
+
+    protected function changePasswordSuccess(): void
+    {
+        $this->response = abort(
+            response()->json([
+                'status'    => true,
+                'messages'  => 'Your Password Has been Changed.'
+            ])
+        );
+    }
 
     protected function error(): void
     {
@@ -89,6 +224,25 @@ abstract class BaseResponder
                 'messages'  => 'Unauthorized Access',
                 'data'      => []
             ], 401)
+        );
+    }
+    protected function forbidden(): void
+    {
+        $this->response = abort(
+            response()->json([
+                'status'    => false,
+                'messages'  => 'Forbidden',
+                'data'      => []
+            ], 403)
+        );
+    }
+    protected function custom(): void
+    {
+        $this->response = abort(
+            response()->json([
+                'status'    => false,
+                'messages'  => $this->payload->getResult()['messages'],
+            ],$this->payload->getResult()['response'])
         );
     }
 

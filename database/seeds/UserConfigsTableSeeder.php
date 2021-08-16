@@ -27,19 +27,19 @@ class UserConfigsTableSeeder extends Seeder
             'password' => bcrypt('secret')
         ])->assignRole($su);
         // create permission
-        $permissions = [
-            'CRUD Consumers',
-            'CRUD Events',
-            'CRUD Guests',
-            'Consumers'
-        ];
-        foreach ($permissions as $permission) {
-            Permission::create(['name' => $permission]);
-        }
+        // $permissions = [
+        //     'CRUD Consumers',
+        //     'CRUD Events',
+        //     'CRUD Guests',
+        //     'Consumers'
+        // ];
+        // foreach ($permissions as $permission) {
+        //     Permission::create(['name' => $permission]);
+        // }
 
         // create roles and assign existing permissions
-        Role::create(['name' => 'corporate'])->givePermissionTo('CRUD Events', 'CRUD Guests', 'CRUD Consumers');
-        Role::create(['name' => 'personal'])->givePermissionTo('CRUD Events', 'CRUD Guests');
-        Role::create(['name' => 'consumer'])->givePermissionTo('Consumers');
+        // Role::create(['name' => 'corporate'])->givePermissionTo('CRUD Events', 'CRUD Guests', 'CRUD Consumers');
+        // Role::create(['name' => 'personal'])->givePermissionTo('CRUD Events', 'CRUD Guests');
+        // Role::create(['name' => 'consumer'])->givePermissionTo('Consumers');
     }
 }

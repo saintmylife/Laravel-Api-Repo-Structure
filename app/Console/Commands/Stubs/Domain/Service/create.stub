@@ -37,7 +37,7 @@ class {{ class }}Create extends BaseService
         /*
         ${{ strtolower(arg_name) }}Dto->password = Hash::make(${{ strtolower(arg_name) }}Dto->password);
         $create = $this->{{ strtolower(arg_name) }}Repo->create(${{ strtolower(arg_name) }}Dto->getData());
-        $create->syncRoles('Personal');
+        //$create->syncRoles('Personal');
         */
 
         return $this->newPayload(Payload::STATUS_CREATED, compact('create'));
