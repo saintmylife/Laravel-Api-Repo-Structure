@@ -125,6 +125,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Token Name
+    |--------------------------------------------------------------------------
+    |
+    | This name is used by the tymon/jwtauth service to generate
+    | httpOnly Cookie during the authentication exchange.
+    |
+    */
+
+    'access_token_name' => env('ACCESS_TOKEN_NAME', 'LARAVEL-AT'),
+    'refresh_token_name' => env('REFRESH_TOKEN_NAME', 'LARAVEL-RT'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Autoloaded Service Providers
     |--------------------------------------------------------------------------
     |

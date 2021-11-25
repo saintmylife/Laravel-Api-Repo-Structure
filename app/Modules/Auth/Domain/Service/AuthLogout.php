@@ -14,7 +14,7 @@ class AuthLogout extends BaseService
     public function __invoke(): Payload
     {
         Auth::logout();
-        $message = 'Successfully logged out';
-        return $this->newPayload(Payload::STATUS_LOGOUT, compact('message'));
+        $messages = 'Successfully logged out';
+        return $this->newPayload(Payload::STATUS_AUTH_LOGGED_OUT, compact('messages'));
     }
 }

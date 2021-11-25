@@ -5,6 +5,7 @@ namespace App\Modules\Base\Domain;
 use App\Modules\Common\Domain\Payload;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Cookie;
 
 abstract class BaseResponder
 {
@@ -18,6 +19,22 @@ abstract class BaseResponder
         $method = $this->getMethodForPayload();
         $this->$method();
         return $this->response;
+    }
+
+    protected function authLoggedIn(): void
+    {
+        $this->response = response()->json(['messages' => 'Login Successfully'])
+            ->withCookie(Cookie::forget(config('app.access_token_name')))
+            ->withCookie(Cookie::forget(config('app.refresh_token_name')))
+            ->withCookie(cookie(config('app.access_token_name'), $this->payload->getResult()['at'], $this->payload->getResult()['at_expires']))
+            ->withCookie(cookie(config('app.refresh_token_name'), $this->payload->getResult()['rt'], $this->payload->getResult()['rt_expires']));
+    }
+
+    protected function authLoggedOut(): void
+    {
+        $this->response = response()->json(['messages' => $this->payload->getResult()['messages']])
+            ->withCookie(Cookie::forget(config('app.access_token_name')))
+            ->withCookie(Cookie::forget(config('app.refresh_token_name')));
     }
 
     protected function found(): void
@@ -94,7 +111,7 @@ abstract class BaseResponder
             ->json([
                 'status'    => true,
                 'messages'  => 'Your Account is Already Verified'
-            ],501);
+            ], 501);
     }
     protected function resendVerified(): void
     {
@@ -111,8 +128,7 @@ abstract class BaseResponder
             ->json([
                 'status'    => false,
                 'messages'  => 'Invalid or Expired OTP Provided'
-            ],401)
-        ;
+            ], 401);
     }
     protected function notValid(): void
     {
@@ -194,7 +210,7 @@ abstract class BaseResponder
             response()->json([
                 'status'    => false,
                 'messages'  => 'Your Old Password is Incorect.'
-            ],501)
+            ], 501)
         );
     }
 
@@ -226,6 +242,7 @@ abstract class BaseResponder
             ], 401)
         );
     }
+
     protected function forbidden(): void
     {
         $this->response = abort(
@@ -236,14 +253,22 @@ abstract class BaseResponder
             ], 403)
         );
     }
+
     protected function custom(): void
     {
         $this->response = abort(
             response()->json([
                 'status'    => false,
                 'messages'  => $this->payload->getResult()['messages'],
-            ],$this->payload->getResult()['response'])
+            ], $this->payload->getResult()['response'])
         );
+    }
+
+    protected function downloadFile(): void
+    {
+        $this->response = response()
+            ->download($this->payload->getResult()['filepath'])
+            ->deleteFileAfterSend();
     }
 
     protected function renderResult(): void

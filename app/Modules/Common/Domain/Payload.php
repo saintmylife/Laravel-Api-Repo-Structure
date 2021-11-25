@@ -32,12 +32,12 @@ class Payload
     const STATUS_UPDATED = 'UPDATED';
     /** User input was valid. */
     const STATUS_VALID = 'VALID';
-    /** User login success. */
-    const STATUS_AUTHENTICATED = 'AUTHENTICATED';
-    /** User login fail. */
-    const STATUS_AUTH_FAILED = 'AUTH_FAILED';
+    /** User logged in. */
+    const STATUS_AUTH_LOGGED_IN = 'AUTH_LOGGED_IN';
+    /** User logged out. */
+    const STATUS_AUTH_LOGGED_OUT = 'AUTH_LOGGED_OUT';
     /** User validate email success. **/
-    const STATUS_AUTH_VERIFY_SUCCESS= 'VERIFIED';
+    const STATUS_AUTH_VERIFY_SUCCESS = 'VERIFIED';
     /** User already validate email. **/
     const STATUS_AUTH_VERIFY_ALREADY = 'ALREADY_VERIFIED';
     /** User validate email fail. **/
@@ -62,6 +62,8 @@ class Payload
     const STATUS_FORBIDDEN = 'FORBIDDEN';
     /** Custom Response **/
     const STATUS_CUSTOM = 'CUSTOM';
+    /** Download FIle */
+    const STATUS_DOWNLOAD_FILE = 'DOWNLOAD_FILE';
 
     public function __construct(string $status, array $result = [])
     {
