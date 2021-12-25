@@ -239,6 +239,17 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Show blacklisted token option
+    |--------------------------------------------------------------------------
+    |
+    | Specify if you want to show black listed token exception on the laravel logs.
+    |
+    */
+
+    'show_black_list_exception' => env('JWT_SHOW_BLACKLIST_EXCEPTION', 0),
+
+    /*
+    |--------------------------------------------------------------------------
     | Cookies encryption
     |--------------------------------------------------------------------------
     |
@@ -275,7 +286,7 @@ return [
         |
         */
 
-        'jwt' => Tymon\JWTAuth\Providers\JWT\Lcobucci::class,
+        'jwt' => PHPOpenSourceSaver\JWTAuth\Providers\JWT\Lcobucci::class,
 
         /*
         |--------------------------------------------------------------------------
@@ -286,7 +297,7 @@ return [
         |
         */
 
-        'auth' => Tymon\JWTAuth\Providers\Auth\Illuminate::class,
+        'auth' => PHPOpenSourceSaver\JWTAuth\Providers\Auth\Illuminate::class,
 
         /*
         |--------------------------------------------------------------------------
@@ -297,8 +308,7 @@ return [
         |
         */
 
-        'storage' => Tymon\JWTAuth\Providers\Storage\Illuminate::class,
-
+        'storage' => PHPOpenSourceSaver\JWTAuth\Providers\Storage\Illuminate::class,
     ],
 
 ];

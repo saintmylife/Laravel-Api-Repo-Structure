@@ -10,13 +10,14 @@
     "require": {
         "php": "^7.2.5|^8.0",
         "fideloper/proxy": "^4.4",
+        "firebase/php-jwt": "^5.5",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^6.3.1|^7.0.1",
         "laravel/framework": "^7.29",
         "laravel/tinker": "^2.5",
+        "php-open-source-saver/jwt-auth": "^1.2",
         "prettus/l5-repository": "^2.7",
-        "spatie/laravel-permission": "^4.0",
-        "tymon/jwt-auth": "1.0.2"
+        "spatie/laravel-permission": "^4.0"
     },
     "require-dev": {
         "facade/ignition": "^2.0",

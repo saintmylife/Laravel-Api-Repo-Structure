@@ -22,10 +22,12 @@ class UserConfigsTableSeeder extends Seeder
         // gets all permissions via Gate::before rule;
         $su = Role::create(['name' => 'super-admin']);
         // create superadmin user
-        User::create([
+        $admin = User::create([
             'email' => 'admin@admin.com',
             'password' => bcrypt('secret')
-        ])->assignRole($su);
+        ]);
+        $admin->assignRole($su);
+        $admin->markEmailAsVerified();
         // create permission
         // $permissions = [
         //     'CRUD Consumers',

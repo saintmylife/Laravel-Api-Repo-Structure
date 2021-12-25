@@ -36,15 +36,14 @@ class AuthLogin extends BaseService
             return $this->newPayload(Payload::STATUS_AUTH_LOGGED_OUT, compact('messages'));
         }
 
-        $ttl = Auth::factory()->getTTL();
-        $newToken = auth()->factory()->setTTL($ttl * 24 * 7)->make()->toArray();
+        $newToken = auth()->factory()->setTTL(config('jwt.ttl') * 24 * 7)->make()->toArray();
         $refreshToken = JWTAuth::getJWTProvider()->encode($newToken);
 
         return $this->newPayload(Payload::STATUS_AUTH_LOGGED_IN, [
             'at' => $token,
-            'at_expires' => $ttl,
+            'at_expires' => config('jwt.ttl'),
             'rt' => $refreshToken,
-            'rt_expires' => Auth::factory()->getTTL()
+            'rt_expires' => auth()->factory()->getTTL()
         ]);
     }
 }
