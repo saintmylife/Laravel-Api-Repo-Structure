@@ -33,7 +33,7 @@ class JwtMiddleware
         // if AT is no longer exist (because expired), set RT for authorization header
         $this->parseTokenAndAuthenticate($request, $request->cookie($rtTokenName));
         // refresh token to get AT again
-        $at = auth()->refresh(true, true);
+        $at = JWTAuth::refresh(JWTAuth::getToken());
         // reset RT
         $refreshed = auth()->factory()->setTTL(config('jwt.ttl') * 24 * 7)->make()->toArray();
         $rt = JWTAuth::getJWTProvider()->encode($refreshed);
