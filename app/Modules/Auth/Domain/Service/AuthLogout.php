@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Auth\Domain\Service\Privates;
+namespace App\Modules\Auth\Domain\Service;
 
 use App\Modules\Auth\Traits\PassportConfig;
 use App\Modules\Base\Domain\BaseService;
