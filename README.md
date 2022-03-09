@@ -9,11 +9,11 @@
 
 ## Build With
 
--   [PHP 7.4.27](https://php.net) - The web language used
--   [Laravel 7.x](https://laravel.com) - The web framework used
+-   [PHP 8.1.3](https://php.net) - The web language used
+-   [Laravel 8.x](https://laravel.com) - The web framework used
 -   [Spattie](https://github.com/spatie/laravel-permission) - Associate users with roles and permissions
 -   [Prettus](https://github.com/andersao/l5-repository) - Repositories to abstract the database layer
--   [JWT-Auth](https://github.com/PHP-Open-Source-Saver/jwt-auth/tree/develop/src) - JWT Token For Authentication
+-   [Passport](https://github.com/laravel/passport) - For Authentication
 
 ## How To Install
 
@@ -23,8 +23,7 @@
     -   `composer install`
     -   `php artisan key:generate`
     -   `php artisan db:migrate && php artisan db:seed`
-    -   `php artisan jwt:secret`
-    -   `php artisan vendor:publish --provider="PHPOpenSourceSaver\JWTAuth\Providers\LaravelServiceProvider"`
+    -   `php artisan passport:install` then copy the password grant client-secret key to .env
     -   `php artisan token:name <your_cookie_token_name>`
 
 > Note
