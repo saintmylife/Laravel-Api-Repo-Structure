@@ -191,7 +191,6 @@ return [
          * Package Service Providers...
          */
         Spatie\Permission\PermissionServiceProvider::class,
-        PHPOpenSourceSaver\JWTAuth\Providers\LaravelServiceProvider::class,
         Prettus\Repository\Providers\RepositoryServiceProvider::class,
         /*
          * Application Service Providers...

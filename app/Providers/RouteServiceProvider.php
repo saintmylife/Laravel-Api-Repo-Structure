@@ -81,7 +81,7 @@ class RouteServiceProvider extends ServiceProvider
             $fileName = basename($routePath, '.php');
             $namespace = sprintf('App\Modules\%s\Api', Str::studly($fileName));
             Route::prefix('api')
-                ->middleware(['api', 'jwt.verify'])
+                ->middleware(['api', 'auth:api'])
                 ->namespace($namespace)
                 ->group($routePath);
         }
