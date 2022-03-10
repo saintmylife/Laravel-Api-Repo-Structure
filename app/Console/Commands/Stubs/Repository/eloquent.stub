@@ -4,7 +4,6 @@ namespace {{ namespace }};
 
 use App\Modules\Base\Repository\BaseEloquentRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-// use Prettus\Repository\Eloquent\BaseRepository;
 
 class {{ class }}Eloquent extends BaseEloquentRepository implements {{ arg_name_before_elq }}Interface
 {

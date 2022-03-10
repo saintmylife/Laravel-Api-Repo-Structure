@@ -2,13 +2,13 @@
 
 namespace App\Modules\Role\Repository;
 
-use Prettus\Repository\Eloquent\BaseRepository;
+use App\Modules\Base\Repository\BaseEloquentRepository;
 use Spatie\Permission\Models\Role;
 
 /**
  * RoleRepository Eloquent
  */
-class RoleRepositoryEloquent extends BaseRepository implements RoleRepositoryInterface
+class RoleRepositoryEloquent extends BaseEloquentRepository implements RoleRepositoryInterface
 {
     /**
      * Specify Model class name

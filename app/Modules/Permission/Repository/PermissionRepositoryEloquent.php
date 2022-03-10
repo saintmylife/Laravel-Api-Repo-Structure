@@ -2,13 +2,13 @@
 
 namespace App\Modules\Permission\Repository;
 
-use Prettus\Repository\Eloquent\BaseRepository;
 use Spatie\Permission\Models\Permission;
+use App\Modules\Base\Repository\BaseEloquentRepository;
 
 /**
  * PermissionRepository Eloquent
  */
-class PermissionRepositoryEloquent extends BaseRepository implements PermissionRepositoryInterface
+class PermissionRepositoryEloquent extends BaseEloquentRepository implements PermissionRepositoryInterface
 {
     /**
      * Specify Model class name
