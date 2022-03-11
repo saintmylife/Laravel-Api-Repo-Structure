@@ -11,16 +11,16 @@ use App\Modules\{{ arg_name }}\Repository\{{ arg_name }}RepositoryInterface;
  */
 class {{ arg_name }}List extends BaseService
 {
-    private ${{ strtolower(arg_name) }}Repo;
+    private $repo;
 
-    public function __construct({{ arg_name }}RepositoryInterface ${{ strtolower(arg_name) }}Repo)
+    public function __construct({{ arg_name }}RepositoryInterface $repo)
     {
-        $this->{{ strtolower(arg_name) }}Repo = ${{ strtolower(arg_name) }}Repo;
+        $this->repo = $repo;
     }
 
     public function __invoke($request)
     {
-        $data = $this->{{ strtolower(arg_name) }}Repo->paginate(isset($request['per_page']) ? $request['per_page'] : 100);
+        $data = $this->repo->paginate(isset($request['per_page']) ? $request['per_page'] : 100);
         return $this->newPayload(Payload::STATUS_FOUND, compact('data'));
     }
 }

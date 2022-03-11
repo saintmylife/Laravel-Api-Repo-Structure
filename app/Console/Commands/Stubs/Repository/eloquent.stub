@@ -3,13 +3,11 @@
 namespace {{ namespace }};
 
 use App\Modules\Base\Repository\BaseEloquentRepository;
-use Prettus\Repository\Criteria\RequestCriteria;
 
 class {{ class }}Eloquent extends BaseEloquentRepository implements {{ arg_name_before_elq }}Interface
 {
 
-    protected $fieldSearchable = [
-    ];
+    protected $fieldSearchable = [];
 
     public function boot(){
         $this->pushCriteria(app('Prettus\Repository\Criteria\RequestCriteria'));

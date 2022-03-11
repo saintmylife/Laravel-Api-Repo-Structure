@@ -14,17 +14,17 @@ use \Illuminate\Auth\Access\AuthorizationException;
  */
 class {{ arg_name }}Delete extends BaseService
 {
-    private ${{ strtolower(arg_name) }}Repo;
+    private $repo;
 
-    public function __construct({{ arg_name }}RepositoryInterface ${{ strtolower(arg_name) }}Repo)
+    public function __construct({{ arg_name }}RepositoryInterface $repo)
     {
-        $this->{{ strtolower(arg_name) }}Repo = ${{ strtolower(arg_name) }}Repo;
+        $this->repo = $repo;
     }
 
     public function __invoke(int $id): Payload
     {
         try {
-            $data = $this->{{ strtolower(arg_name) }}Repo->find($id);
+            $data = $this->repo->find($id);
         } catch (ModelNotFoundException $e) {
             return $this->newPayload(Payload::STATUS_NOT_FOUND, compact('id'));
         }
@@ -34,7 +34,7 @@ class {{ arg_name }}Delete extends BaseService
             return $this->newPayload(Payload::STATUS_UNAUTHORIZED);
         }
 
-        $this->{{ strtolower(arg_name) }}Repo->delete($id);
+        $this->repo->delete($id);
         $message = '{{ strtolower(arg_name) }} deleted';
         return $this->newPayload(Payload::STATUS_DELETED, compact('message'));
     }

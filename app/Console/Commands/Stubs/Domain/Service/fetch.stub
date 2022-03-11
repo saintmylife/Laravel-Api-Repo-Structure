@@ -15,17 +15,17 @@ use \Illuminate\Auth\Access\AuthorizationException;
  */
 class {{ arg_name }}Fetch extends BaseService
 {
-    private ${{ strtolower(arg_name) }}Repo;
+    private $repo;
 
-    public function __construct({{ arg_name }}RepositoryInterface ${{ strtolower(arg_name) }}Repo)
+    public function __construct({{ arg_name }}RepositoryInterface $repo)
     {
-        $this->{{ strtolower(arg_name) }}Repo = ${{ strtolower(arg_name) }}Repo;
+        $this->repo = $repo;
     }
 
     public function __invoke(int $id): Payload
     {
         try {
-            $data = $this->{{ strtolower(arg_name) }}Repo->find($id);
+            $data = $this->repo->find($id);
         } catch (ModelNotFoundException $e) {
             return $this->newPayload(Payload::STATUS_NOT_FOUND, compact('id'));
         }

@@ -18,12 +18,12 @@ use Illuminate\Support\Facades\Gate;
 class {{ arg_name }}Edit extends BaseService
 {
     private $filter;
-    private ${{ strtolower(arg_name) }}Repo;
+    private $repo;
 
-    public function __construct({{ arg_name }}Filter $filter, {{ arg_name }}RepositoryInterface ${{ strtolower(arg_name) }}Repo)
+    public function __construct({{ arg_name }}Filter $filter, {{ arg_name }}RepositoryInterface $repo)
     {
         $this->filter = $filter;
-        $this->{{ strtolower(arg_name) }}Repo = ${{ strtolower(arg_name) }}Repo;
+        $this->repo = $repo;
     }
 
     public function __invoke(int $id, array $data): Payload
@@ -32,7 +32,7 @@ class {{ arg_name }}Edit extends BaseService
         ${{ strtolower(arg_name) }}Dto->id = $id;
 
         try {
-             ${{ strtolower(arg_name) }} = $this->{{ strtolower(arg_name) }}Repo->find($id);
+             ${{ strtolower(arg_name) }} = $this->repo->find($id);
         } catch (ModelNotFoundException $e) {
             return $this->newPayload(Payload::STATUS_NOT_FOUND, compact('id'));
         }
@@ -51,6 +51,6 @@ class {{ arg_name }}Edit extends BaseService
 
         $update = $this->{{ strtolower(arg_name) }}Repo->update($dataForDb, $id);
 
-        return $this->newPayload(Payload::STATUS_UPDATED, compact('data'));
+        return $this->newPayload(Payload::STATUS_UPDATED, compact('update'));
     }
 }
