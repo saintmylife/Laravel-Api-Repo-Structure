@@ -1,0 +1,27 @@
+<?php
+
+namespace {{ deleteServiceNamespace }};
+
+use App\Modules\{{ service }}\Repository\{{ service }}RepoInterface;
+use App\Modules\Base\Domain\BaseService;
+use App\Modules\Common\Domain\Payload;
+
+class {{ service }}Delete extends BaseService
+{
+    private $repo;
+
+    public function __construct({{ service }}RepoInterface $repo)
+    {
+        $this->repo = $repo;
+    }
+
+    public function __invoke(int $id): Payload
+    {
+        if((${{service}} = $this->fetch->__invoke($id))->getStatus() != 'FOUND'){
+            return ${{service}};
+        }
+        $this->repo->delete($id);
+        $message = '{{service}} deleted';
+        return $this->newPayload(Payload::STATUS_DELETED, compact('message'));
+    }
+}

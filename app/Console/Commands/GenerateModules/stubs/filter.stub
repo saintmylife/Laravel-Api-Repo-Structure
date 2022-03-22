@@ -1,0 +1,25 @@
+<?php
+
+namespace {{ filterNamespace }};
+
+use App\Modules\Base\BaseDto;
+use App\Modules\Base\Domain\BaseFilter;
+
+class {{ filter }}Filter extends BaseFilter
+{
+    const TABLE_NAME = '{{filter}}s';
+
+    public function forUpdate(BaseDto $data): bool
+    {
+        $this->messages = [];
+        $this->setBasicRule();
+        return $this->basic($data);
+    }
+
+    protected function setBasicRule()
+    {
+        $this->rules = [
+            'name'  => ['required', 'string', 'min:2'],
+        ];
+    }
+}

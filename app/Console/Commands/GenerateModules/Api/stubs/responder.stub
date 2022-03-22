@@ -1,0 +1,9 @@
+<?php
+
+namespace {{ responderApiNamespace }};
+
+use App\Modules\Base\Domain\BaseResponder;
+
+class {{ api }}Responder extends BaseResponder
+{
+}

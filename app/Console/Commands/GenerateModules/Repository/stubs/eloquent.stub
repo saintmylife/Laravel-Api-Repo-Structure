@@ -1,0 +1,33 @@
+<?php
+
+namespace {{ eloquentNamespace }};
+
+use App\Models\{{ eloquent }};
+use App\Modules\Base\Repository\BaseEloquentRepository;
+
+class {{ eloquent }}Eloquent extends BaseEloquentRepository implements {{ eloquent }}RepoInterface
+{
+
+    protected $fieldSearchable = [];
+
+    public function boot()
+    {
+        $this->pushCriteria(app('Prettus\Repository\Criteria\RequestCriteria'));
+    }
+
+    /**
+     * Specify Model class name
+     *
+     * @return string
+     */
+    public function model()
+    {
+        return {{ eloquent }}::class;
+    }
+    /*
+    |--------------------------------------------------------------------------
+    | Define function helper
+    |--------------------------------------------------------------------------
+    * @return mixed
+    */
+}

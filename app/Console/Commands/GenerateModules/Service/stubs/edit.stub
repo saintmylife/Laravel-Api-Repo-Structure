@@ -1,0 +1,43 @@
+<?php
+
+namespace {{ editServiceNamespace }};
+
+use App\Modules\{{ service }}\{{ service }}Dto;
+use App\Modules\{{ service }}\Domain\{{ service }}Filter;
+use App\Modules\{{ service }}\Repository\{{ service }}RepoInterface;
+use App\Modules\Base\Domain\BaseService;
+use App\Modules\Common\Domain\Payload;
+
+class {{ service }}Edit extends BaseService
+{
+    private $fetch;
+    private $filter;
+    private $repo;
+
+    public function __construct({{ service }}Fetch $fetch,{{ service }}Filter $filter, {{ service }}RepoInterface $repo)
+    {
+        $this->fetch = $fetch;
+        $this->filter = $filter;
+        $this->repo = $repo;
+    }
+
+    public function __invoke(int $id, array $data): Payload
+    {
+        ${{service}}Dto = $this->makeDto($data, new {{ service }}Dto);
+        ${{service}}Dto->id = $id;
+
+        ${{service}} = $this->fetch->__invoke($id);
+        if(${{service}}->getStatus() != 'FOUND'){
+            return ${{service}};
+        }
+        ${{service}} = ${{service}}->getResult()['data'];
+
+        if (!$this->filter->forUpdate(${{service}}Dto)) {
+            $messages = $this->filter->getMessages();
+            return $this->newPayload(Payload::STATUS_NOT_VALID, compact('messages', 'data'));
+        }
+
+        $update = $this->repo->update(${{service}}Dto->getData(), $id);
+        return $this->newPayload(Payload::STATUS_UPDATED, compact('update'));
+    }
+}

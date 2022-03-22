@@ -1,0 +1,26 @@
+<?php
+
+namespace {{ listApiNamespace }};
+
+use App\Http\Controllers\Controller;
+use App\Modules\{{ api }}\Domain\Service\{{ api }}List;
+use App\Modules\{{ api }}\Api\Responder\{{ api }}Responder;
+use Illuminate\Http\Request;
+
+class {{ api }}ListAction extends Controller
+{
+    private $domain;
+    private $responder;
+
+    public function __construct({{ api }}List $domain, {{ api }}Responder $responder)
+    {
+        $this->domain = $domain;
+        $this->responder = $responder;
+    }
+
+    public function __invoke(Request $request)
+    {
+        $payload = $this->domain->__invoke($request->all());
+        return $this->responder->__invoke($payload);
+    }
+}

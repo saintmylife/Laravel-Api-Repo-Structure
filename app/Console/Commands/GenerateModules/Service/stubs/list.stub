@@ -1,0 +1,23 @@
+<?php
+
+namespace {{ listServiceNamespace }};
+
+use App\Modules\{{ service }}\Repository\{{ service }}RepoInterface;
+use App\Modules\Base\Domain\BaseService;
+use App\Modules\Common\Domain\Payload;
+
+class {{ service }}List extends BaseService
+{
+    private $repo;
+
+    public function __construct({{ service }}RepoInterface $repo)
+    {
+        $this->repo = $repo;
+    }
+
+    public function __invoke($request)
+    {
+        $data = $this->repo->paginate(isset($request['per_page']) ? $request['per_page'] : 50);
+        return $this->newPayload(Payload::STATUS_FOUND, compact('data'));
+    }
+}
