@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands\GenerateModules\Service;
+namespace App\Console\Commands\GenerateModules\Api;
 
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Str;
@@ -13,7 +13,8 @@ class Custom extends GeneratorCommand
      *
      * @var string
      */
-    protected $name = 'generate:service-custom';
+    protected $name = 'generate:api-custom';
+    protected $hidden = true;
     /**
      * The name of the console command.
      *
@@ -21,20 +22,21 @@ class Custom extends GeneratorCommand
      *
      * @var string|null
      */
-    protected static $defaultName = 'generate:service-custom';
+    protected static $defaultName = 'generate:api-custom';
+    // protected $hidden = true;
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Generate Custom Service Module';
+    protected $description = 'Generate Custom Api Action Module';
 
     /**
      * The type of class being generated.
      *
      * @var string
      */
-    protected $type = 'Service Custom';
+    protected $type = 'Api Custom';
     /**
      * Get the stub file for the generator.
      *
@@ -52,19 +54,13 @@ class Custom extends GeneratorCommand
      */
     protected function buildClass($name)
     {
-        $this->callSilently('generate:api-custom', [
-            'name' => Str::studly($this->argument('name')),
-            'namespace' => Str::studly($this->argument('namespace')),
-        ]);
-
-        $custom = class_basename($name);
-        $customNamespace = class_basename($this->argument('namespace'));
+        $create = class_basename($name);
+        $namespace = class_basename($this->argument('namespace'));
 
         $replace = [
-            '{{ customServiceNamespace }}' => $this->rootNamespace() . 'Modules\\' . Str::studly($customNamespace) . '\\Domain\\Service',
-            '{{ service }}' => $custom,
-            '{{service}}' => Str::camel($custom),
-            '{{ pathNamespace }}' => Str::studly($customNamespace)
+            '{{ createApiNamespace }}' => $this->rootNamespace() . 'Modules\\' . Str::studly($namespace) . '\\Api\\Action',
+            '{{ api }}' => $create,
+            '{{ pathNamespace }}' => Str::studly($namespace)
         ];
 
         return str_replace(
@@ -84,7 +80,7 @@ class Custom extends GeneratorCommand
         $name = (string) Str::of($name)->replaceFirst($this->rootNamespace(), '');
         $namespace = (string) Str::of($this->argument('namespace'))->replaceFirst($this->rootNamespace(), '');
 
-        return $this->laravel->basePath('app/Modules/') . Str::studly($namespace) . '/Domain/Service/' . $name . '.php';
+        return $this->laravel->basePath('app/Modules/') . Str::studly($namespace) . '/Api/Action/' . $name . 'Action.php';
     }
     /**
      * Get the console command arguments.

@@ -12,14 +12,13 @@ class GenerateService extends Command
      *
      * @var string
      */
-    protected $signature = 'generate:service {name : The Service Name} 
+    protected $signature = 'generate:service {name : The Service Name}
                             {--a|all : Generate All Service Module Resources} 
                             {--c|create : Generate Create Service Module Resource} 
                             {--d|delete : Generate Delete Service Module Resource}
                             {--e|edit : Generate Edit Service Module Resource}
                             {--f|fetch : Generate Fetch Service Module Resource}
-                            {--l|list : Generate List Service Module Resource}
-                            {--custom=default : Generate Custom Service Module Resource}';
+                            {--l|list : Generate List Service Module Resource}';
 
     /**
      * The console command description.
@@ -41,7 +40,6 @@ class GenerateService extends Command
             $this->input->setOption('edit', true);
             $this->input->setOption('fetch', true);
             $this->input->setOption('list', true);
-            $this->input->setOption('custom', false);
         }
 
         if ($this->option('create')) {
@@ -58,9 +56,6 @@ class GenerateService extends Command
         }
         if ($this->option('list')) {
             $this->serviceList();
-        }
-        if ($this->option('custom')) {
-            $this->serviceCustom();
         }
 
         $this->info('All Service Resources Created Successfully !!!');
@@ -119,17 +114,6 @@ class GenerateService extends Command
     protected function serviceList()
     {
         $this->callSilently('generate:service-list', [
-            'name' => Str::studly($this->argument('name'))
-        ]);
-    }
-    /**
-     * Custom service resources.
-     *
-     * @return void
-     */
-    protected function serviceCustom()
-    {
-        $this->callSilently('generate:service-custom', [
             'name' => Str::studly($this->argument('name'))
         ]);
     }

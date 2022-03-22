@@ -2,9 +2,9 @@
 
 namespace {{ customServiceNamespace }};
 
-use App\Modules\{{ service }}\{{ service }}Dto;
-use App\Modules\{{ service }}\Domain\{{ service }}Filter;
-use App\Modules\{{ service }}\Repository\{{ service }}RepoInterface;
+use App\Modules\{{ pathNamespace }}\{{ pathNamespace }}Dto;
+use App\Modules\{{ pathNamespace }}\Domain\{{ pathNamespace }}Filter;
+use App\Modules\{{ pathNamespace }}\Repository\{{ pathNamespace }}RepoInterface;
 use App\Modules\Base\Domain\BaseService;
 use App\Modules\Common\Domain\Payload;
 
@@ -13,7 +13,7 @@ class {{ service }} extends BaseService
     private $filter;
     private $repo;
 
-    public function __construct({{ service }}Filter $filter, {{ service }}RepoInterface $repo)
+    public function __construct({{ pathNamespace }}Filter $filter, {{ pathNamespace }}RepoInterface $repo)
     {
         $this->filter = $filter;
         $this->repo = $repo;
@@ -21,9 +21,9 @@ class {{ service }} extends BaseService
 
     public function __invoke(array $data): Payload
     {
-        ${{service}}Dto = $this->makeDto($data, new {{ service }}Dto);
+        ${{service}}Dto = $this->makeDto($data, new {{ pathNamespace }}Dto);
 
-        if (!$this->filter->forCreate(${{service}}Dto)) {
+        if (!$this->filter->forInsert(${{service}}Dto)) {
             $messages = $this->filter->getMessages();
             return $this->newPayload(Payload::STATUS_NOT_VALID, compact('data', 'messages'));
         }

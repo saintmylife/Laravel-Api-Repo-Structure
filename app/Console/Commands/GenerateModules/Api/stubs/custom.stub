@@ -1,0 +1,26 @@
+<?php
+
+namespace {{ createApiNamespace }};
+
+use App\Http\Controllers\Controller;
+use App\Modules\{{ pathNamespace }}\Domain\Service\{{ api }};
+use App\Modules\{{ pathNamespace }}\Api\Responder\{{ pathNamespace }}Responder;
+use Illuminate\Http\Request;
+
+class {{ api }}Action extends Controller
+{
+    private $domain;
+    private $responder;
+
+    public function __construct({{ api }} $domain, {{ pathNamespace }}Responder $responder)
+    {
+        $this->domain = $domain;
+        $this->responder = $responder;
+    }
+
+    public function __invoke(Request $request)
+    {
+        $payload = $this->domain->__invoke($request->all());
+        return $this->responder->__invoke($payload);
+    }
+}
