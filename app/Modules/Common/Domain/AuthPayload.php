@@ -34,4 +34,6 @@ class AuthPayload extends Payload
     const STATUS_AUTH_RESET_PASSWORD_SUCCESS = 'AUTH_RESET_PASSWORD_SUCCESS';
     /** Confirm password is same */
     const STATUS_AUTH_CONFIRM_PASSWORD = 'AUTH_CONFIRM_PASSWORD';
+    /** Clear Cookies */
+    const STATUS_AUTH_CLEAR_COOKIES = 'AUTH_CLEAR_COOKIES';
 }

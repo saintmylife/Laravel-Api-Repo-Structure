@@ -23,7 +23,7 @@
     -   `composer install`
     -   `php artisan key:generate`
     -   `php artisan db:migrate && php artisan db:seed`
-    -   `php artisan generate:install` to initialize key for auth
+    -   `php artisan generate:secret` to initialize key for auth
 
 > Note
 

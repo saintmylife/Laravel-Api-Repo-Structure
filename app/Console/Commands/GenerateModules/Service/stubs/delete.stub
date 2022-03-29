@@ -8,10 +8,12 @@ use App\Modules\Common\Domain\Payload;
 
 class {{ service }}Delete extends BaseService
 {
+    private $fetch;
     private $repo;
 
-    public function __construct({{ service }}RepoInterface $repo)
+    public function __construct({{ service }}Fetch $fetch,{{ service }}RepoInterface $repo)
     {
+        $this->fetch = $fetch;
         $this->repo = $repo;
     }
 

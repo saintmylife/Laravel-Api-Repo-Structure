@@ -64,7 +64,8 @@ class Custom extends GeneratorCommand
             '{{ customServiceNamespace }}' => $this->rootNamespace() . 'Modules\\' . Str::studly($customNamespace) . '\\Domain\\Service',
             '{{ service }}' => $custom,
             '{{service}}' => Str::camel($custom),
-            '{{ pathNamespace }}' => Str::studly($customNamespace)
+            '{{ pathNamespace }}' => Str::studly($customNamespace),
+            '{{pathNamespace}}' => Str::camel($customNamespace)
         ];
 
         return str_replace(

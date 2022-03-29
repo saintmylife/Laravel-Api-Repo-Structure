@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use \Spatie\Permission\Exceptions\UnauthorizedException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -39,6 +40,11 @@ class Handler extends ExceptionHandler
             return response()->json([
                 'messages'  => $e->getMessage()
             ], 405);
+        });
+        $this->renderable(function (UnauthorizedException $e, $request) {
+            return response()->json([
+                'messages' => $e->getMessage(),
+            ], 403);
         });
         $this->reportable(function (Throwable $e) {
             //

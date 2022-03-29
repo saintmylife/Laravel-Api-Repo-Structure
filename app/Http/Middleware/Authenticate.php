@@ -8,7 +8,9 @@ use App\Modules\Common\Domain\AuthPayload;
 use App\Modules\Common\Middleware\{JwtMiddlewareRespond, JwtMiddlewareContract};
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use App\Modules\Common\Domain\Payload;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class Authenticate extends Middleware implements JwtMiddlewareContract
 {
@@ -46,9 +48,21 @@ class Authenticate extends Middleware implements JwtMiddlewareContract
         $this->checkAndSetToken($request);
         $this->authenticate($request, $guards);
 
-        return $next($request)
-            ->withCookie(cookie($this->accessTokenName, $this->newToken['at'], $this->accessTokenTTL))
-            ->withCookie(cookie($this->refreshTokenName, $this->newToken['rt'], $this->refreshTokenTTL));
+        return $this->handleCookie($request, $next);
+    }
+    /**
+     * Handle Queue Cookie
+     */
+    private function handleCookie($request, \Closure $next)
+    {
+        Cookie::queue($this->accessTokenName, $this->newToken['at'], $this->accessTokenTTL);
+        Cookie::queue($this->refreshTokenName, $this->newToken['rt'], $this->refreshTokenTTL);
+        $response = $next($request);
+        $queueCookie = Cookie::getQueuedCookies();
+        foreach ($queueCookie as $cookie) {
+            $response->headers->setCookie($cookie);
+        }
+        return $response;
     }
     /**
      * Handle an unauthenticated user.
@@ -95,10 +109,18 @@ class Authenticate extends Middleware implements JwtMiddlewareContract
                 $this->oAuthFormData('refresh_token', [
                     'refresh_token' => $request->cookie($this->refreshTokenName),
                 ])
-            )->throw()->json();
-        } catch (\Exception) {
+            );
+            if ($auth->status() != 200) {
+                throw new \Exception($auth->json()['message']);
+            }
+        } catch (\Exception $e) {
+            Log::build([
+                'driver' => 'single',
+                'path' => storage_path('logs/passport.log'),
+            ])->info($e->getMessage());
             return $this->returnPayload(AuthPayload::STATUS_AUTH_TOKEN_INVALID);
         }
+        $auth = $auth->json();
         $this->newToken['at'] = $auth['access_token'];
         $this->newToken['rt'] = $auth['refresh_token'];
         $this->setAuthorizationHeader($request, $auth['access_token']);

@@ -7,9 +7,11 @@ use stdClass;
 
 abstract class BaseAuthResponder extends BaseResponder
 {
-    protected function forgetAuthCookie($response)
+    protected function authClearCookies()
     {
-        return $response->withoutCookie(config('app-auth.access_token_name'))
+        $this->response = response()->json([
+            'messages' => 'Clear Cookie Succesfully !!'
+        ])->withoutCookie(config('app-auth.access_token_name'))
             ->withoutCookie(config('app-auth.refresh_token_name'));
     }
     protected function authNotValid(): void
@@ -23,12 +25,11 @@ abstract class BaseAuthResponder extends BaseResponder
     protected function authenticated(): void
     {
         $this->response =
-            $this->forgetAuthCookie(
-                response()->json([
-                    'status'    => true,
-                    'messages' => 'Login Successfully'
-                ])
-            )->withCookie(
+            response()->json([
+                'status'    => true,
+                'messages' => 'Login Successfully'
+            ])
+            ->withCookie(
                 cookie(
                     config('app-auth.access_token_name'),
                     $this->payload->getResult()['auth']['access_token'],
@@ -45,44 +46,38 @@ abstract class BaseAuthResponder extends BaseResponder
     }
     protected function authLogout(): void
     {
-        $this->response = $this->forgetAuthCookie(
+        $this->response =
             response()->json([
                 'status'    => true,
                 'messages'  => 'Logout Successfully',
-            ])
-        );
+            ])->withoutCookie(config('app-auth.access_token_name'))
+            ->withoutCookie(config('app-auth.refresh_token_name'));
     }
     protected function authTokenNotFound(): void
     {
         $this->response = abort(
-            $this->forgetAuthCookie(
-                response()->json([
-                    'status'    => false,
-                    'messages'  => 'Authorization token not found, please login',
-                ], 401)
-            )
+            response()->json([
+                'status'    => false,
+                'messages'  => 'Authorization token not found, please login',
+            ], 401)
         );
     }
     protected function authTokenInvalid(): void
     {
         $this->response = abort(
-            $this->forgetAuthCookie(
-                response()->json([
-                    'status'    => false,
-                    'messages'  => 'Invalid Token or Expired Token, please login again.',
-                ], 403)
-            )
+            response()->json([
+                'status'    => false,
+                'messages'  => 'Invalid Token or Expired Token, please login again.',
+            ], 403)
         );
     }
     protected function authFailed(): void
     {
         $this->response = abort(
-            $this->forgetAuthCookie(
-                response()->json([
-                    'status'    => false,
-                    'messages'  => 'Your login information you entered did not matched our records. Please double check and try again',
-                ], 401)
-            )
+            response()->json([
+                'status'    => false,
+                'messages'  => $this->payload->getResult()
+            ], 401)
         );
     }
     protected function authVerifyFailed(): void

@@ -49,10 +49,6 @@ class GenerateJob extends GeneratorCommand
         if (parent::handle() === false && !$this->option('force')) {
             return false;
         }
-
-        // if ($this->option('repo')) {
-        //     dd($this->option('repo'));
-        // }
     }
     /**
      * Get the stub file for the generator.
@@ -77,7 +73,7 @@ class GenerateJob extends GeneratorCommand
         $replace = [
             '{{ jobNamespace }}' => $this->rootNamespace() . 'Modules\\' . $module . '\\Jobs',
             '{{ job }}' => $job,
-            '{{ repoNamespace }}' => $this->rootNamespace() . 'Modules\\' . $module . '\\Repository\\' . $module . 'Interface',
+            '{{ repoNamespace }}' => $this->rootNamespace() . 'Modules\\' . $module . '\\Repository\\' . $module . 'RepoInterface',
             '{{ repo }}' => $module
         ];
 

@@ -29,7 +29,7 @@ class {{ job }} implements ShouldQueue
      *
      * @return void
      */
-    public function handle({{ repo }}Interface $repo)
+    public function handle({{ repo }}RepoInterface $repo)
     {
         // $repo->create();
     }

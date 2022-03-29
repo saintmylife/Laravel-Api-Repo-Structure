@@ -20,6 +20,10 @@ class Payload
     const STATUS_NOT_DELETED = 'NOT_DELETED';
     /** A query failed to return results. */
     const STATUS_NOT_FOUND = 'NOT_FOUND';
+    /** A query failed to return results. */
+    const STATUS_EVENT_NOT_FOUND = 'EVENT_NOT_FOUND';
+    /** A query failed to return results because no active event. */
+    const STATUS_NO_ACTIVE_EVENT = 'NO_ACTIVE_EVENT';
     /** A slug query failed to return results. */
     const STATUS_SLUG_NOT_FOUND = 'SLUG_NOT_FOUND';
     /** A asset query failed to return results. */
@@ -45,7 +49,7 @@ class Payload
     /** Determine if resources has no data */
     const STATUS_NO_DATA = 'NO_DATA';
     /** Download File */
-    const STATUS_DOWNLOAD = 'DOWNLOAD';
+    const STATUS_DOWNLOAD_AND_REMOVE = 'DOWNLOAD_AND_REMOVE';
     /** Import File */
     const STATUS_IMPORTED = 'IMPORTED';
     /** Expired Data */

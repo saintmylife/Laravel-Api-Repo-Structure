@@ -30,6 +30,7 @@ class RouteServiceProvider extends ServiceProvider
         $this->configureRateLimiting();
 
         $this->routes(function () {
+            Route::pattern('id', '[0-9]+');
             // api routing
             $this->mapApiRoutes();
             // web routing

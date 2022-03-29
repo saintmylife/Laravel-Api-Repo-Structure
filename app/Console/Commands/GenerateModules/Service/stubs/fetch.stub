@@ -5,6 +5,7 @@ namespace {{ fetchServiceNamespace }};
 use App\Modules\{{ service }}\Repository\{{ service }}RepoInterface;
 use App\Modules\Base\Domain\BaseService;
 use App\Modules\Common\Domain\Payload;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class {{ service }}Fetch extends BaseService
 {
@@ -17,11 +18,11 @@ class {{ service }}Fetch extends BaseService
 
     public function __invoke(int $id): Payload
     {
-        $data = $this->fetch->__invoke($id);
-        if($data->getStatus() != 'FOUND'){
-            return $data;
+        try {
+            $data = $this->repo->find($id);
+        } catch (ModelNotFoundException) {
+            return $this->newPayload(Payload::STATUS_NOT_FOUND, compact('id'));
         }
-        $data = $data->getResult()['data'];
         return $this->newPayload(Payload::STATUS_FOUND, compact('data'));
     }
 }

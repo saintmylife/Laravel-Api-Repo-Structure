@@ -4,6 +4,7 @@ namespace App\Modules\Base\Domain;
 
 use App\Modules\Common\Domain\Payload;
 use Illuminate\Support\{Str, Arr};
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
 abstract class BaseResponder
@@ -17,6 +18,10 @@ abstract class BaseResponder
         $this->payload = $payload;
         $method = $this->getMethodForPayload();
         $this->$method();
+        Log::build([
+            'driver' => 'single',
+            'path' => storage_path('logs/response.log'),
+        ])->info(json_encode($this->payload->getResult()));
         return $this->response;
     }
 
@@ -81,6 +86,24 @@ abstract class BaseResponder
                 'status'    => false,
                 'messages'  => 'ID : ' . $this->payload->getResult()['id'] . ' not found !!'
             ], 404)
+        );
+    }
+    protected function eventNotFound(): void
+    {
+        $this->response = abort(
+            response()->json([
+                'status'    => false,
+                'messages'  => 'Event-ID : ' . $this->payload->getResult()['event_id'] . ' not found !!'
+            ], 404)
+        );
+    }
+    protected function noActiveEvent(): void
+    {
+        $this->response = abort(
+            response()->json([
+                'status'    => false,
+                'messages'  => 'No active event, please create or activate one'
+            ], 400)
         );
     }
     protected function slugNotFound(): void
@@ -157,10 +180,7 @@ abstract class BaseResponder
 
     protected function noData(): void
     {
-        $this->response = abort(response()->json([
-            'status' => false,
-            'messages' => 'No data, cant continue the request.'
-        ], 204));
+        $this->response = abort(response()->json([], 204));
     }
 
     protected function downloadAndRemove(): void

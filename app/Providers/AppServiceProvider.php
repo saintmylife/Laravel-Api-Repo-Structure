@@ -2,8 +2,9 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
 use Carbon\Carbon;
+use Illuminate\Support\ServiceProvider;
+use Illuminate\Validation\Rules\Password;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,6 +26,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->setAppLocale();
+        $this->registerRepository();
+        $this->setDefaultRulePassword();
     }
 
     private function registerRepository()
@@ -49,5 +52,13 @@ class AppServiceProvider extends ServiceProvider
     {
         config(['app.locale' => 'id']);
         Carbon::setLocale('id');
+        date_default_timezone_set('Asia/Jakarta');
+    }
+
+    protected function setDefaultRulePassword()
+    {
+        Password::defaults(function () {
+            return Password::min(6)->mixedCase()->numbers();
+        });
     }
 }
