@@ -4,6 +4,7 @@ namespace App\Console\Commands\GenerateModules\Service;
 
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Str;
+use Symfony\Component\Console\Input\InputOption;
 
 class Delete extends GeneratorCommand
 {
@@ -54,11 +55,13 @@ class Delete extends GeneratorCommand
     protected function buildClass($name)
     {
         $delete = class_basename($name);
-
+        $version = "V{$this->option('revision')}";
+        $namespace = "Modules\\{$version}\\{$delete}\\Domain\\Service";
         $replace = [
-            '{{ deleteServiceNamespace }}' => $this->rootNamespace() . 'Modules\\' . $delete . '\\Domain\\Service',
-            '{{ service }}' => $delete,
-            '{{service}}' => Str::camel($delete)
+            '{$deleteServiceNamespace}' => $this->rootNamespace() . $namespace,
+            '{$service}' => $delete,
+            '{$serviceCamel}' => Str::camel($delete),
+            '{$version}' => $version
         ];
 
         return str_replace(
@@ -76,7 +79,20 @@ class Delete extends GeneratorCommand
     protected function getPath($name)
     {
         $name = (string) Str::of($name)->replaceFirst($this->rootNamespace(), '');
+        $path = "/app/Modules/v{$this->option('revision')}/{$name}/Domain/Service/{$name}Delete.php";
 
-        return $this->laravel->basePath('app/Modules/') . $name . '/Domain/Service/' . $name . 'Delete.php';
+        return $this->laravel->basePath() . $path;
+    }
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
+    protected function getOptions()
+    {
+        return [
+            ['force', 'f', InputOption::VALUE_NONE, 'Force Rewrite File'],
+            ['revision', 'r', InputOption::VALUE_REQUIRED, 'Version Resource Module', config('app-config.version')],
+        ];
     }
 }

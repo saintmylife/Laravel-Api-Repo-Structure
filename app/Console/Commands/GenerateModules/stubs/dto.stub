@@ -1,10 +1,10 @@
 <?php
 
-namespace {{ dtoNamespace }};
+namespace {$dtoNamespace};
 
 use App\Modules\Base\BaseDto;
 
-class {{ dto }}Dto extends BaseDto
+class {$dto}Dto extends BaseDto
 {
     protected $id;
 }

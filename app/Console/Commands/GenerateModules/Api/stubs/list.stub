@@ -1,21 +1,16 @@
 <?php
 
-namespace {{ listApiNamespace }};
+namespace {$listApiNamespace};
 
 use App\Http\Controllers\Controller;
-use App\Modules\{{ api }}\Domain\Service\{{ api }}List;
-use App\Modules\{{ api }}\Api\Responder\{{ api }}Responder;
+use App\Modules\{$version}\{$api}\Api\Responder\{$api}Responder;
+use App\Modules\{$version}\{$api}\Domain\Service\{$api}List;
 use Illuminate\Http\Request;
 
-class {{ api }}ListAction extends Controller
+class {$api}ListAction extends Controller
 {
-    private $domain;
-    private $responder;
-
-    public function __construct({{ api }}List $domain, {{ api }}Responder $responder)
+    public function __construct(private {$api}List $domain, private {$api}Responder $responder)
     {
-        $this->domain = $domain;
-        $this->responder = $responder;
     }
 
     public function __invoke(Request $request)

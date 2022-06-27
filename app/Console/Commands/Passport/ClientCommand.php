@@ -106,8 +106,8 @@ class ClientCommand extends Command
         $this->info('Password grant client created successfully.');
 
         $this->outputClientDetails($client);
-        $this->setEnvKey('PASSPORT_PERSONAL_ACCESS_CLIENT_ID', $client->id);
-        $this->setEnvKey('PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET', $client->plainSecret);
+        $this->setEnvKey('PASSPORT_FIRST_PARTY_GRANT_PASSWORD_ID', $client->id);
+        $this->setEnvKey('PASSPORT_FIRST_PARTY_GRANT_PASSWORD_SECRET', $client->plainSecret);
     }
     protected function setEnvKey($key, $value)
     {

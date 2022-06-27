@@ -14,14 +14,14 @@ class RouteServiceProvider extends ServiceProvider
     /**
      * The path to the "home" route for your application.
      *
-     * This is used by Laravel authentication to redirect users after login.
+     * Typically, users are redirected here after authentication.
      *
      * @var string
      */
     public const HOME = '/home';
 
     /**
-     * Define your route model bindings, pattern filters, etc.
+     * Define your route model bindings, pattern filters, and other route configuration.
      *
      * @return void
      */
@@ -30,13 +30,9 @@ class RouteServiceProvider extends ServiceProvider
         $this->configureRateLimiting();
 
         $this->routes(function () {
-            Route::pattern('id', '[0-9]+');
-            // api routing
-            $this->mapApiRoutes();
-            // web routing
-            Route::middleware('web')
-                ->group(base_path('routes/web.php'));
-            // fallback
+            $this->globalRouteConstraints();
+            $this->mapApiRoute();
+            Route::middleware('web')->group(base_path('routes/web.php'));
             Route::fallback(function () {
                 return response()->json(['message' => 'Route Not Found!'], 404);
             })->name('fallback');
@@ -55,22 +51,36 @@ class RouteServiceProvider extends ServiceProvider
         });
     }
     /**
-     * Define the "api" routes for the application.
-     *
-     * These routes are typically stateless.
-     *
+     * Configure Global Constraint for route parameters
+     * 
      * @return void
      */
-    protected function mapApiRoutes()
+    protected function globalRouteConstraints()
     {
-        $routeFiles = glob(base_path('routes/api/*.php'));
-        foreach ($routeFiles as $routePath) {
-            $fileName = basename($routePath, '.php');
-            $namespace = sprintf('App\Modules\%s\Api\Action', Str::studly($fileName));
-            Route::prefix('api')
-                ->middleware(['api', 'auth:api'])
-                ->namespace($namespace)
-                ->group($routePath);
+        Route::pattern('id', '[0-9]+');
+    }
+    /**
+     * Register api/private Route
+     * 
+     * @return void
+     */
+    protected function mapApiRoute()
+    {
+        $getApiVersion = glob(base_path('routes/api/v*'));
+        foreach ($getApiVersion as $api) {
+            $version = basename($api);
+            $routes = glob(base_path("routes/api/$version/*.php"));
+            $middleware = ['api', 'api_version:' . $version];
+            $prefix = "api/${version}";
+            foreach ($routes as $route) {
+                $fileName = basename($route, '.php');
+                $namespace = sprintf('App\Modules\%s\%s\Api\Action', $version, Str::studly($fileName));
+                Route::prefix($prefix)
+                    ->middleware($middleware)
+                    ->namespace($namespace)
+                    ->name("{$version}.")
+                    ->group($route);
+            }
         }
     }
 }

@@ -4,6 +4,7 @@ namespace App\Console\Commands\GenerateModules\Repository;
 
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Str;
+use Symfony\Component\Console\Input\InputOption;
 
 class Interfaces extends GeneratorCommand
 {
@@ -54,9 +55,10 @@ class Interfaces extends GeneratorCommand
     {
         $interface = class_basename($name);
 
+        $namespace = "Modules\\V{$this->option('revision')}\\{$interface}\\Repository";
         $replace = [
-            '{{ interfaceNamespace }}' => $this->rootNamespace() . 'Modules\\' . $interface . '\\Repository',
-            '{{ interface }}' => $interface
+            '{$interfaceNamespace}' => $this->rootNamespace() . $namespace,
+            '{$interface}' => $interface,
         ];
 
         return str_replace(
@@ -74,7 +76,20 @@ class Interfaces extends GeneratorCommand
     protected function getPath($name)
     {
         $name = (string) Str::of($name)->replaceFirst($this->rootNamespace(), '');
+        $path = "/app/Modules/v{$this->option('revision')}/{$name}/Repository/{$name}Repository.php";
 
-        return $this->laravel->basePath('app/Modules/') . $name . '/Repository/' . $name . 'RepoInterface.php';
+        return $this->laravel->basePath() . $path;
+    }
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
+    protected function getOptions()
+    {
+        return [
+            ['force', 'f', InputOption::VALUE_NONE, 'Force Rewrite File'],
+            ['revision', 'r', InputOption::VALUE_REQUIRED, 'Version Resource Module', config('app-config.version')],
+        ];
     }
 }

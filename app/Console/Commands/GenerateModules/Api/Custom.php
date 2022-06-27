@@ -5,6 +5,7 @@ namespace App\Console\Commands\GenerateModules\Api;
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 
 class Custom extends GeneratorCommand
 {
@@ -23,7 +24,6 @@ class Custom extends GeneratorCommand
      * @var string|null
      */
     protected static $defaultName = 'generate:api-custom';
-    // protected $hidden = true;
     /**
      * The console command description.
      *
@@ -55,12 +55,14 @@ class Custom extends GeneratorCommand
     protected function buildClass($name)
     {
         $create = class_basename($name);
-        $namespace = class_basename($this->argument('namespace'));
-
+        $baseNamespace = class_basename($this->argument('namespace'));
+        $version = "V{$this->option('revision')}";
+        $namespace = "Modules\\{$version}\\" . Str::studly($baseNamespace) . "\\Api\\Action";
         $replace = [
-            '{{ createApiNamespace }}' => $this->rootNamespace() . 'Modules\\' . Str::studly($namespace) . '\\Api\\Action',
-            '{{ api }}' => $create,
-            '{{ pathNamespace }}' => Str::studly($namespace)
+            '{$createApiNamespace}' => $this->rootNamespace() . $namespace,
+            '{$api}' => $create,
+            '{$pathNamespace}' => Str::studly($baseNamespace),
+            '{$version}' => $version
         ];
 
         return str_replace(
@@ -79,8 +81,10 @@ class Custom extends GeneratorCommand
     {
         $name = (string) Str::of($name)->replaceFirst($this->rootNamespace(), '');
         $namespace = (string) Str::of($this->argument('namespace'))->replaceFirst($this->rootNamespace(), '');
+        $version = "v{$this->option('revision')}";
+        $path = "/app/Modules/{$version}/" . Str::studly($namespace) . "/Api/Action/{$name}Action.php";
 
-        return $this->laravel->basePath('app/Modules/') . Str::studly($namespace) . '/Api/Action/' . $name . 'Action.php';
+        return $this->laravel->basePath() . $path;
     }
     /**
      * Get the console command arguments.
@@ -92,6 +96,18 @@ class Custom extends GeneratorCommand
         return [
             ['name', InputArgument::REQUIRED, 'The name of the class'],
             ['namespace', InputArgument::REQUIRED, 'The namespace of the class'],
+        ];
+    }
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
+    protected function getOptions()
+    {
+        return [
+            ['force', 'f', InputOption::VALUE_NONE, 'Force Rewrite File'],
+            ['revision', 'r', InputOption::VALUE_REQUIRED, 'Version Resource Module', config('app-config.version')],
         ];
     }
 }

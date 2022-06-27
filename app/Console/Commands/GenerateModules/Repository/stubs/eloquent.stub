@@ -1,20 +1,14 @@
 <?php
 
-namespace {{ eloquentNamespace }};
+namespace {$eloquentNamespace};
 
-use App\Models\{{ eloquent }};
+use App\Models\{$eloquent};
 use App\Modules\Base\Repository\BaseEloquentRepository;
+use Prettus\Repository\Criteria\RequestCriteria;
 
-class {{ eloquent }}Eloquent extends BaseEloquentRepository implements {{ eloquent }}RepoInterface
+class {$eloquent}RepositoryEloquent extends BaseEloquentRepository implements {$eloquent}Repository
 {
-
     protected $fieldSearchable = [];
-
-    public function boot()
-    {
-        $this->pushCriteria(app('Prettus\Repository\Criteria\RequestCriteria'));
-    }
-
     /**
      * Specify Model class name
      *
@@ -22,8 +16,17 @@ class {{ eloquent }}Eloquent extends BaseEloquentRepository implements {{ eloque
      */
     public function model()
     {
-        return {{ eloquent }}::class;
+        return {$eloquent}::class;
     }
+    
+    /**
+     * Boot up the repository, pushing criteria
+     */
+    public function boot()
+    {
+        $this->pushCriteria(app(RequestCriteria::class));
+    }
+
     /*
     |--------------------------------------------------------------------------
     | Define function helper

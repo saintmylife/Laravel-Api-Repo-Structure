@@ -4,73 +4,94 @@ namespace App\Modules\Base\Domain;
 
 use App\Modules\Base\BaseDto;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\{Rule, Rules\Unique, Rules\Exists};
-use Illuminate\Validation\Rules\In;
 
 /**
  * Base filter
  */
-class BaseFilter
+abstract class BaseFilter
 {
-    protected $rules;
-    protected $messages;
+    private $rules = [];
+    private $messages = [];
+    private $validator;
 
-    public function getMessages()
+    abstract public function basicRule(): array;
+    abstract public function prepareData(array $data): array;
+
+    public function forInsert(array $data)
     {
-        return $this->messages;
+        $this->rules = $this->basicRule();
+        return $this->validate($data);
     }
 
-    public function forInsert(BaseDto $data): bool
-    {
-        $this->messages = [];
-        $this->setBasicRule();
-        return $this->basic($data);
-    }
-
-    public function forUpdate(BaseDto $data): bool
+    public function forUpdate(array $data, int $id = null)
     {
         return $this->forInsert($data);
     }
 
-    protected function basic(BaseDto $data): bool
+    protected function validate(array $data)
     {
-        $this->validate($data);
-        return $this->isValid();
+        $this->validator = Validator::make($this->prepareDataForValidation($data), $this->rules, $this->messages);
+        return $this->validator->errors()->isEmpty();
     }
 
-    protected function validate(BaseDto $data)
+    private function prepareDataForValidation(array $data)
     {
-        $validator = Validator::make($data->getData(), $this->rules, $this->messages);
-        $this->messages = $validator->errors();
+        return array_replace($data, $this->prepareData($data));
     }
 
-    protected function isValid(): bool
+    /**
+     * Getter and Setter Message Property
+     */
+    public function getMessages(): array
     {
-        return $this->messages->isEmpty();
+        return $this->messages;
     }
-
-    protected function addRule(string $field, $rule)
+    public function setMessages(array $messages = [])
     {
-        if (is_array($rule)) {
-            foreach ($rule as $r) {
-                array_push($this->rules[$field], $r);
-            }
-        } else {
-            array_push($this->rules[$field], $rule);
+        $this->messages = $messages;
+        return $this->messages;
+    }
+    /**
+     * Getter and Setter Rules Property
+     */
+    public function getRules(): array
+    {
+        return $this->rules;
+    }
+    public function setRules(array $rules = [])
+    {
+        $this->rules = $rules;
+        return $this->rules;
+    }
+    public function setRulesByKey(string $key, array $rules)
+    {
+        if (!array_key_exists($key, $this->rules)) {
+            $this->rules[$key] = $rules;
+            return;
+        }
+        foreach ($rules as $rule) {
+            array_push($this->rules[$key], $rule);
         }
     }
-
-    protected function ruleUnique(string $table, string $column): Unique
+    /**
+     * Get Validator Instance
+     */
+    public function getValidatorInstance()
     {
-        return Rule::unique($table, $column);
+        return $this->validator;
     }
-
-    protected function ruleExists(string $table, string $column): Exists
+    /**
+     * Get Validation Error Messages
+     */
+    public function getValidationMessage()
     {
-        return Rule::exists($table, $column);
+        return $this->validator->errors();
     }
-    protected function ruleIn(array $data): In
+    /**
+     * Get Validated Data
+     */
+    public function getValidatedData()
     {
-        return Rule::in($data);
+        return $this->validator->validated();
     }
 }

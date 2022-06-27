@@ -4,6 +4,7 @@ namespace App\Console\Commands\GenerateModules\Service;
 
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Str;
+use Symfony\Component\Console\Input\InputOption;
 
 class Create extends GeneratorCommand
 {
@@ -54,11 +55,13 @@ class Create extends GeneratorCommand
     protected function buildClass($name)
     {
         $create = class_basename($name);
-
+        $version = "V{$this->option('revision')}";
+        $namespace = "Modules\\{$version}\\{$create}\\Domain\\Service";
         $replace = [
-            '{{ createServiceNamespace }}' => $this->rootNamespace() . 'Modules\\' . $create . '\\Domain\\Service',
-            '{{ service }}' => $create,
-            '{{service}}' => Str::camel($create)
+            '{$createServiceNamespace}' => $this->rootNamespace() . $namespace,
+            '{$service}' => $create,
+            '{$serviceCamel}' => Str::camel($create),
+            '{$version}' => $version
         ];
 
         return str_replace(
@@ -76,7 +79,21 @@ class Create extends GeneratorCommand
     protected function getPath($name)
     {
         $name = (string) Str::of($name)->replaceFirst($this->rootNamespace(), '');
+        $version = "v{$this->option('revision')}";
+        $path = "/app/Modules/{$version}/{$name}/Domain/Service/{$name}Create.php";
 
-        return $this->laravel->basePath('app/Modules/') . $name . '/Domain/Service/' . $name . 'Create.php';
+        return $this->laravel->basePath() . $path;
+    }
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
+    protected function getOptions()
+    {
+        return [
+            ['force', 'f', InputOption::VALUE_NONE, 'Force Rewrite File'],
+            ['revision', 'r', InputOption::VALUE_REQUIRED, 'Version Resource Module', config('app-config.version')],
+        ];
     }
 }

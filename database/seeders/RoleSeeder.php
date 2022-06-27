@@ -2,11 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Modules\Role\Repository\RoleRepoInterface;
-use App\Modules\User\Repository\UserRepoInterface;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\PermissionRegistrar;
+use Spatie\Permission\Models\Role;
 
 class RoleSeeder extends Seeder
 {
@@ -15,15 +14,16 @@ class RoleSeeder extends Seeder
      *
      * @return void
      */
-    public function run(RoleRepoInterface $repo, UserRepoInterface $userRepo)
+    public function run()
     {
-        // Reset cached roles and permissions
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
+        $roles = config('app-config.roles');
 
-        $repo->create([
-            'name' => config('app-auth.super_admin_role_name')
-        ]);
-
-        $userRepo->find(1)->assignRole(1);
+        $create = [];
+        foreach ($roles as $role) {
+            $create[] = Role::create([
+                'name' => $role
+            ]);
+        }
     }
 }
