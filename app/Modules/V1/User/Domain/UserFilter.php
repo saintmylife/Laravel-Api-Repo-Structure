@@ -12,7 +12,7 @@ class UserFilter extends BaseFilter
 
     public function forInsert(array $data): bool
     {
-        $this->setRules(Arr::except($this->basicRule(), ['password', 'avatar']));
+        $this->setRules(Arr::except($this->basicRule(), ['password']));
         $this->basicRuleForRole();
         return $this->validate($data);
     }
@@ -24,9 +24,6 @@ class UserFilter extends BaseFilter
                 ['name', 'phone', 'address', 'phone']
             )
         );
-        if (!empty($data['avatar']) && is_file($data['avatar'])) {
-            $this->setRulesByKey('avatar', $this->basicRule()['avatar']);
-        }
         return $this->validate($data);
     }
     public function forChangeRole(array $data): bool

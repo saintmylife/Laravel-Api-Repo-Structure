@@ -2,7 +2,6 @@
 
 namespace App\Modules\Base\Domain;
 
-use App\Modules\Base\BaseDto;
 use Illuminate\Support\Facades\Validator;
 
 /**
