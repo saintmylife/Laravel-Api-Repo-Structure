@@ -15,7 +15,9 @@ class GenerateRepo extends Command
     protected $signature = 'generate:repo {name : The Repo Name} 
                             {--a|all=default : Generate All Module Resources} 
                             {--e|eloquent : Generate Eloquent Resource} 
-                            {--i|interface : Generate Interface Resource}';
+                            {--i|interface : Generate Interface Resource}
+                            {--rev|revision= : The Version Of The Module }
+                            {--force : Force Rewrite The File}';
 
     /**
      * The console command description.
@@ -31,16 +33,19 @@ class GenerateRepo extends Command
      */
     public function handle()
     {
+        if (is_null($this->option('revision'))) {
+            $this->input->setOption('revision', config('app-config.version'));
+        }
         if ($this->option('all')) {
             $this->input->setOption('eloquent', true);
             $this->input->setOption('interface', true);
         }
 
         if ($this->option('eloquent')) {
-            $this->createEloquent();
+            $this->createEloquent($this->option('revision'));
         }
         if ($this->option('interface')) {
-            $this->createInterface();
+            $this->createInterface($this->option('revision'));
         }
 
         $this->info('All Repository Resources Created Successfully !!!');
@@ -52,10 +57,12 @@ class GenerateRepo extends Command
      *
      * @return void
      */
-    protected function createEloquent()
+    protected function createEloquent(int $version)
     {
         $this->callSilently('generate:repo-eloquent', [
-            'name' => Str::studly($this->argument('name'))
+            'name' => Str::studly($this->argument('name')),
+            '--revision' => $version,
+            '--force' => $this->option('force')
         ]);
     }
     /**
@@ -63,10 +70,12 @@ class GenerateRepo extends Command
      *
      * @return void
      */
-    protected function createInterface()
+    protected function createInterface(int $version)
     {
         $this->callSilently('generate:repo-interface', [
-            'name' => Str::studly($this->argument('name'))
+            'name' => Str::studly($this->argument('name')),
+            '--revision' => $version,
+            '--force' => $this->option('force')
         ]);
     }
 }

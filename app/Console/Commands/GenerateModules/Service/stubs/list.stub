@@ -1,23 +1,20 @@
 <?php
 
-namespace {{ listServiceNamespace }};
+namespace {$listServiceNamespace};
 
-use App\Modules\{{ service }}\Repository\{{ service }}RepoInterface;
+use App\Modules\{$version}\{$service}\Repository\{$service}Repository;
 use App\Modules\Base\Domain\BaseService;
 use App\Modules\Common\Domain\Payload;
 
-class {{ service }}List extends BaseService
+class {$service}List extends BaseService
 {
-    private $repo;
-
-    public function __construct({{ service }}RepoInterface $repo)
+    public function __construct(private {$service}Repository $repo)
     {
-        $this->repo = $repo;
     }
 
     public function __invoke($request)
     {
-        $data = $this->repo->paginate(isset($request['per_page']) ? $request['per_page'] : 50);
+        $data = $this->repo->paginate(isset($request['per_page']) ?? null)->onEachSide(0);
         return $this->newPayload(Payload::STATUS_FOUND, compact('data'));
     }
 }

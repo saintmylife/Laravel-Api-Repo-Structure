@@ -1,21 +1,16 @@
 <?php
 
-namespace {{ editApiNamespace }};
+namespace {$editApiNamespace};
 
 use App\Http\Controllers\Controller;
-use App\Modules\{{ api }}\Domain\Service\{{ api }}Edit;
-use App\Modules\{{ api }}\Api\Responder\{{ api }}Responder;
+use App\Modules\{$version}\{$api}\Api\Responder\{$api}Responder;
+use App\Modules\{$version}\{$api}\Domain\Service\{$api}Edit;
 use Illuminate\Http\Request;
 
-class {{ api }}EditAction extends Controller
+class {$api}EditAction extends Controller
 {
-    private $domain;
-    private $responder;
-
-    public function __construct({{ api }}Edit $domain, {{ api }}Responder $responder)
+    public function __construct(private {$api}Edit $domain, private {$api}Responder $responder)
     {
-        $this->domain = $domain;
-        $this->responder = $responder;
     }
 
     public function __invoke(Request $request,int $id)

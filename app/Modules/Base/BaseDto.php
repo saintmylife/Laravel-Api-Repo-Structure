@@ -22,7 +22,7 @@ class BaseDto
         $this->$key = $val;
     }
 
-    public function setData(array $data = []) : void
+    public function setData(array $data = []): void
     {
         foreach ($data as $key => $value) {
             if (property_exists($this, $key)) {
@@ -31,7 +31,7 @@ class BaseDto
         }
     }
 
-    public function getData() : array
+    public function getData(): array
     {
         $properties = get_object_vars($this);
         return $properties;

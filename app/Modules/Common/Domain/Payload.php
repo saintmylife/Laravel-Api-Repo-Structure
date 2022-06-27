@@ -2,7 +2,9 @@
 
 namespace App\Modules\Common\Domain;
 
-class Payload
+use Illuminate\Support\Arr;
+
+class Payload implements AuthPayload
 {
     /** A creation command succeeded. */
     const STATUS_CREATED = 'CREATED';
@@ -20,14 +22,6 @@ class Payload
     const STATUS_NOT_DELETED = 'NOT_DELETED';
     /** A query failed to return results. */
     const STATUS_NOT_FOUND = 'NOT_FOUND';
-    /** A query failed to return results. */
-    const STATUS_EVENT_NOT_FOUND = 'EVENT_NOT_FOUND';
-    /** A query failed to return results because no active event. */
-    const STATUS_NO_ACTIVE_EVENT = 'NO_ACTIVE_EVENT';
-    /** A slug query failed to return results. */
-    const STATUS_SLUG_NOT_FOUND = 'SLUG_NOT_FOUND';
-    /** A asset query failed to return results. */
-    const STATUS_ASSET_NOT_FOUND = 'ASSET_NOT_FOUND';
     /** An update command failed. */
     const STATUS_NOT_UPDATED = 'NOT_UPDATED';
     /** User input was not valid. */
@@ -38,24 +32,18 @@ class Payload
     const STATUS_RESTORED = 'RESTORED';
     /** User input was valid. */
     const STATUS_VALID = 'VALID';
-    /** Unaothorized User */
-    const STATUS_UNAUTHORIZED = 'UNAUTHORIZED';
-    /** Forbidden access */
-    const STATUS_FORBIDDEN = 'FORBIDDEN';
-    /** Determine if resource isnt owner */
-    const STATUS_NOT_OWNER = 'NOT_OWNER';
-    /** Determine if resource is protected */
+    /** Protected Resources */
     const STATUS_PROTECTED_RESOURCE = 'PROTECTED_RESOURCE';
-    /** Determine if resources has no data */
-    const STATUS_NO_DATA = 'NO_DATA';
-    /** Download File */
-    const STATUS_DOWNLOAD_AND_REMOVE = 'DOWNLOAD_AND_REMOVE';
-    /** Import File */
-    const STATUS_IMPORTED = 'IMPORTED';
-    /** Expired Data */
-    const STATUS_EXPIRED = 'EXPIRED';
-    /** Determine if already has an record */
-    const STATUS_HAS_RECORD = 'HAS_RECORD';
+    /** Request THROTTLED */
+    const STATUS_THROTTLED = 'THROTTLED';
+
+    /** Hide Response Data */
+    protected $except = [
+        '_method',
+        'password',
+        'password_confirmation',
+        'password_old',
+    ];
 
     public function __construct(string $status, array $result = [])
     {
@@ -70,6 +58,9 @@ class Payload
 
     public function getResult(): array
     {
+        if (!empty($this->result['data'])) {
+            $this->result['data'] = Arr::except($this->result['data'], $this->except);
+        }
         return $this->result;
     }
 }

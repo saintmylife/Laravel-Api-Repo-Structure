@@ -13,12 +13,14 @@ class GenerateService extends Command
      * @var string
      */
     protected $signature = 'generate:service {name : The Service Name}
-                            {--a|all : Generate All Service Module Resources} 
+                            {--all=default : Generate All Service Module Resources} 
                             {--c|create : Generate Create Service Module Resource} 
                             {--d|delete : Generate Delete Service Module Resource}
                             {--e|edit : Generate Edit Service Module Resource}
                             {--f|fetch : Generate Fetch Service Module Resource}
-                            {--l|list : Generate List Service Module Resource}';
+                            {--l|list : Generate List Service Module Resource}
+                            {--rev|revision= : The Version Of The Module }
+                            {--force : Force Rewrite The File}';
 
     /**
      * The console command description.
@@ -34,6 +36,9 @@ class GenerateService extends Command
      */
     public function handle()
     {
+        if (is_null($this->option('revision'))) {
+            $this->input->setOption('revision', config('app-config.version'));
+        }
         if ($this->option('all')) {
             $this->input->setOption('create', true);
             $this->input->setOption('delete', true);
@@ -43,19 +48,19 @@ class GenerateService extends Command
         }
 
         if ($this->option('create')) {
-            $this->serviceCreate();
+            $this->serviceCreate($this->option('revision'));
         }
         if ($this->option('delete')) {
-            $this->serviceDelete();
+            $this->serviceDelete($this->option('revision'));
         }
         if ($this->option('edit')) {
-            $this->serviceEdit();
+            $this->serviceEdit($this->option('revision'));
         }
         if ($this->option('fetch')) {
-            $this->serviceFetch();
+            $this->serviceFetch($this->option('revision'));
         }
         if ($this->option('list')) {
-            $this->serviceList();
+            $this->serviceList($this->option('revision'));
         }
 
         $this->info('All Service Resources Created Successfully !!!');
@@ -67,10 +72,12 @@ class GenerateService extends Command
      *
      * @return void
      */
-    protected function serviceCreate()
+    protected function serviceCreate(int $version)
     {
         $this->callSilently('generate:service-create', [
-            'name' => Str::studly($this->argument('name'))
+            'name' => Str::studly($this->argument('name')),
+            '--revision' => $version,
+            '--force' => $this->option('force')
         ]);
     }
     /**
@@ -78,10 +85,12 @@ class GenerateService extends Command
      *
      * @return void
      */
-    protected function serviceDelete()
+    protected function serviceDelete(int $version)
     {
         $this->callSilently('generate:service-delete', [
-            'name' => Str::studly($this->argument('name'))
+            'name' => Str::studly($this->argument('name')),
+            '--revision' => $version,
+            '--force' => $this->option('force')
         ]);
     }
     /**
@@ -89,10 +98,12 @@ class GenerateService extends Command
      *
      * @return void
      */
-    protected function serviceEdit()
+    protected function serviceEdit(int $version)
     {
         $this->callSilently('generate:service-edit', [
-            'name' => Str::studly($this->argument('name'))
+            'name' => Str::studly($this->argument('name')),
+            '--revision' => $version,
+            '--force' => $this->option('force')
         ]);
     }
     /**
@@ -100,10 +111,12 @@ class GenerateService extends Command
      *
      * @return void
      */
-    protected function serviceFetch()
+    protected function serviceFetch(int $version)
     {
         $this->callSilently('generate:service-fetch', [
-            'name' => Str::studly($this->argument('name'))
+            'name' => Str::studly($this->argument('name')),
+            '--revision' => $version,
+            '--force' => $this->option('force')
         ]);
     }
     /**
@@ -111,10 +124,12 @@ class GenerateService extends Command
      *
      * @return void
      */
-    protected function serviceList()
+    protected function serviceList(int $version)
     {
         $this->callSilently('generate:service-list', [
-            'name' => Str::studly($this->argument('name'))
+            'name' => Str::studly($this->argument('name')),
+            '--revision' => $version,
+            '--force' => $this->option('force')
         ]);
     }
 }

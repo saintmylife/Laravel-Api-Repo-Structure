@@ -1,34 +1,28 @@
 <?php
 
-namespace {{ createServiceNamespace }};
+namespace {$createServiceNamespace};
 
-use App\Modules\{{ service }}\{{ service }}Dto;
-use App\Modules\{{ service }}\Domain\{{ service }}Filter;
-use App\Modules\{{ service }}\Repository\{{ service }}RepoInterface;
+use App\Modules\{$version}\{$service}\{$service}Dto;
+use App\Modules\{$version}\{$service}\Domain\{$service}Filter;
+use App\Modules\{$version}\{$service}\Repository\{$service}Repository;
 use App\Modules\Base\Domain\BaseService;
 use App\Modules\Common\Domain\Payload;
 
-class {{ service }}Create extends BaseService
+class {$service}Create extends BaseService
 {
-    private $filter;
-    private $repo;
-
-    public function __construct({{ service }}Filter $filter, {{ service }}RepoInterface $repo)
+    public function __construct(private {$service}Filter $filter, private {$service}Repository $repo)
     {
-        $this->filter = $filter;
-        $this->repo = $repo;
     }
 
     public function __invoke(array $data): Payload
     {
-        ${{service}}Dto = $this->makeDto($data, new {{ service }}Dto);
-
-        if (!$this->filter->forInsert(${{service}}Dto)) {
-            $messages = $this->filter->getMessages();
+        if (!$this->filter->forInsert($data)) {
+            $messages = $this->filter->getValidationMessage();
             return $this->newPayload(Payload::STATUS_NOT_VALID, compact('data', 'messages'));
         }
+        ${$serviceCamel}Dto = new {$service}Dto($this->filter->getValidatedData());
 
-        $create = $this->repo->create(${{service}}Dto->getData());
+        $create = $this->repo->create(${$serviceCamel}Dto->getData());
 
         return $this->newPayload(Payload::STATUS_CREATED, compact('create'));
     }

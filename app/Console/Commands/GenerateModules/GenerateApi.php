@@ -4,7 +4,6 @@ namespace App\Console\Commands\GenerateModules;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
-use Symfony\Component\Console\Input\InputOption;
 
 class GenerateApi extends Command
 {
@@ -20,7 +19,9 @@ class GenerateApi extends Command
                             {--e|edit : Generate Api Edit Module Resources}
                             {--f|fetch : Generate Api Fetch Module Resources}
                             {--l|list : Generate Api List Module Resources}
-                            {--r|responder : Generate Api Responder Module Resources}';
+                            {--r|responder : Generate Api Responder Module Resources}
+                            {--rev|revision= : The Version Of The Module }
+                            {--force : Force Rewrite The File}';
 
     /**
      * The console command description.
@@ -43,6 +44,10 @@ class GenerateApi extends Command
      */
     public function handle()
     {
+        if (is_null($this->option('revision'))) {
+            $this->input->setOption('revision', config('app-config.version'));
+        }
+
         if ($this->option('all')) {
             $this->input->setOption('create', true);
             $this->input->setOption('delete', true);
@@ -53,22 +58,22 @@ class GenerateApi extends Command
         }
 
         if ($this->option('create')) {
-            $this->apiCreate();
+            $this->apiCreate($this->option('revision'));
         }
         if ($this->option('delete')) {
-            $this->apiDelete();
+            $this->apiDelete($this->option('revision'));
         }
         if ($this->option('edit')) {
-            $this->apiEdit();
+            $this->apiEdit($this->option('revision'));
         }
         if ($this->option('fetch')) {
-            $this->apiFetch();
+            $this->apiFetch($this->option('revision'));
         }
         if ($this->option('list')) {
-            $this->apiList();
+            $this->apiList($this->option('revision'));
         }
         if ($this->option('responder')) {
-            $this->apiResponder();
+            $this->apiResponder($this->option('revision'));
         }
     }
     /**
@@ -76,10 +81,12 @@ class GenerateApi extends Command
      *
      * @return void
      */
-    protected function apiCreate()
+    protected function apiCreate(int $version)
     {
         $this->call('generate:api-create', [
-            'name' => Str::studly($this->argument('name'))
+            'name' => Str::studly($this->argument('name')),
+            '--revision' => $version,
+            '--force' => $this->option('force')
         ]);
     }
     /**
@@ -87,10 +94,12 @@ class GenerateApi extends Command
      *
      * @return void
      */
-    protected function apiDelete()
+    protected function apiDelete(int $version)
     {
         $this->call('generate:api-delete', [
-            'name' => Str::studly($this->argument('name'))
+            'name' => Str::studly($this->argument('name')),
+            '--revision' => $version,
+            '--force' => $this->option('force')
         ]);
     }
     /**
@@ -98,10 +107,12 @@ class GenerateApi extends Command
      *
      * @return void
      */
-    protected function apiEdit()
+    protected function apiEdit(int $version)
     {
         $this->call('generate:api-edit', [
-            'name' => Str::studly($this->argument('name'))
+            'name' => Str::studly($this->argument('name')),
+            '--revision' => $version,
+            '--force' => $this->option('force')
         ]);
     }
     /**
@@ -109,10 +120,12 @@ class GenerateApi extends Command
      *
      * @return void
      */
-    protected function apiFetch()
+    protected function apiFetch(int $version)
     {
         $this->call('generate:api-fetch', [
-            'name' => Str::studly($this->argument('name'))
+            'name' => Str::studly($this->argument('name')),
+            '--revision' => $version,
+            '--force' => $this->option('force')
         ]);
     }
     /**
@@ -120,10 +133,12 @@ class GenerateApi extends Command
      *
      * @return void
      */
-    protected function apiList()
+    protected function apiList(int $version)
     {
         $this->call('generate:api-list', [
-            'name' => Str::studly($this->argument('name'))
+            'name' => Str::studly($this->argument('name')),
+            '--revision' => $version,
+            '--force' => $this->option('force')
         ]);
     }
     /**
@@ -131,28 +146,12 @@ class GenerateApi extends Command
      *
      * @return void
      */
-    protected function apiResponder()
+    protected function apiResponder(int $version)
     {
         $this->call('generate:api-responder', [
-            'name' => Str::studly($this->argument('name'))
+            'name' => Str::studly($this->argument('name')),
+            '--revision' => $version,
+            '--force' => $this->option('force')
         ]);
-    }
-
-    /**
-     * Get the console command options.
-     *
-     * @return array
-     */
-    protected function getOptions()
-    {
-        return [
-            ['all', 'a', InputOption::VALUE_NONE, 'Generate basic resources for this Module'],
-            ['create', 'c', InputOption::VALUE_NONE, 'Create a new create api resources'],
-            ['delete', 'd', InputOption::VALUE_NONE, 'Create a new delete api resources'],
-            ['edit', 'e', InputOption::VALUE_NONE, 'Create a new edit api resources'],
-            ['fetch', 'f', InputOption::VALUE_NONE, 'Create a new fetch api resources'],
-            ['list', 'l', InputOption::VALUE_NONE, 'Create a new list api resources'],
-            ['responder', 'r', InputOption::VALUE_NONE, 'Create a new responder api resources'],
-        ];
     }
 }

@@ -34,6 +34,8 @@ class GenerateModule extends Command
      */
     public function handle()
     {
+        $moduleVersion = $this->ask('What version of the module ?', config('app-config.version'));
+
         if ($this->option('all')) {
             $this->input->setOption('api', true);
             $this->input->setOption('dto', true);
@@ -43,19 +45,19 @@ class GenerateModule extends Command
         }
 
         if ($this->option('api')) {
-            $this->createApi();
+            $this->createApi($moduleVersion);
         }
         if ($this->option('dto')) {
-            $this->createDto();
+            $this->createDto($moduleVersion);
         }
         if ($this->option('filter')) {
-            $this->createFilter();
+            $this->createFilter($moduleVersion);
         }
         if ($this->option('repo')) {
-            $this->createRepo();
+            $this->createRepo($moduleVersion);
         }
         if ($this->option('svc')) {
-            $this->createService();
+            $this->createService($moduleVersion);
         }
 
         $this->info('All Module Resources Created Successfully !!!');
@@ -67,11 +69,12 @@ class GenerateModule extends Command
      *
      * @return void
      */
-    protected function createApi()
+    protected function createApi(int $version)
     {
         $this->callSilently('generate:api', [
+            'name' => Str::studly($this->argument('name')),
             '--all',
-            'name' => Str::studly($this->argument('name'))
+            '--revision' => $version
         ]);
     }
     /**
@@ -79,10 +82,11 @@ class GenerateModule extends Command
      *
      * @return void
      */
-    protected function createDto()
+    protected function createDto(int $version)
     {
         $this->callSilently('generate:dto', [
-            'name' => Str::studly($this->argument('name'))
+            'name' => Str::studly($this->argument('name')),
+            '--revision' => $version
         ]);
     }
     /**
@@ -90,10 +94,11 @@ class GenerateModule extends Command
      *
      * @return void
      */
-    protected function createFilter()
+    protected function createFilter(int $version)
     {
         $this->callSilently('generate:filter', [
-            'name' => Str::studly($this->argument('name'))
+            'name' => Str::studly($this->argument('name')),
+            '--revision' => $version
         ]);
     }
     /**
@@ -101,11 +106,12 @@ class GenerateModule extends Command
      *
      * @return void
      */
-    protected function createRepo()
+    protected function createRepo(int $version)
     {
         $this->callSilently('generate:repo', [
             '--all',
-            'name' => Str::studly($this->argument('name'))
+            'name' => Str::studly($this->argument('name')),
+            '--revision' => $version
         ]);
     }
     /**
@@ -113,11 +119,12 @@ class GenerateModule extends Command
      *
      * @return void
      */
-    protected function createService()
+    protected function createService(int $version)
     {
         $this->callSilently('generate:service', [
+            'name' => Str::studly($this->argument('name')),
             '--all' => true,
-            'name' => Str::studly($this->argument('name'))
+            '--revision' => $version
         ]);
     }
 }

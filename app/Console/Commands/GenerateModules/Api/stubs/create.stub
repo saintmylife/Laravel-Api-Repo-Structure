@@ -1,21 +1,16 @@
 <?php
 
-namespace {{ createApiNamespace }};
+namespace {$createApiNamespace};
 
 use App\Http\Controllers\Controller;
-use App\Modules\{{ api }}\Domain\Service\{{ api }}Create;
-use App\Modules\{{ api }}\Api\Responder\{{ api }}Responder;
+use App\Modules\{$version}\{$api}\Api\Responder\{$api}Responder;
+use App\Modules\{$version}\{$api}\Domain\Service\{$api}Create;
 use Illuminate\Http\Request;
 
-class {{ api }}CreateAction extends Controller
+class {$api}CreateAction extends Controller
 {
-    private $domain;
-    private $responder;
-
-    public function __construct({{ api }}Create $domain, {{ api }}Responder $responder)
+    public function __construct(private {$api}Create $domain, private {$api}Responder $responder)
     {
-        $this->domain = $domain;
-        $this->responder = $responder;
     }
 
     public function __invoke(Request $request)

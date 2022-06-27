@@ -2,6 +2,7 @@
 
 namespace App\Modules\Base\Domain;
 
+use App\Modules\Base\Domain\Responder\AuthResponder;
 use App\Modules\Common\Domain\Payload;
 use Illuminate\Support\{Str, Arr};
 use Illuminate\Support\Facades\Log;
@@ -12,23 +13,25 @@ abstract class BaseResponder
     protected $request;
     protected $response;
     protected $payload;
+    use AuthResponder;
 
     public function __invoke(Payload $payload): Response
     {
         $this->payload = $payload;
         $method = $this->getMethodForPayload();
         $this->$method();
-        Log::build([
-            'driver' => 'single',
-            'path' => storage_path('logs/response.log'),
-        ])->info(json_encode($this->payload->getResult()));
+        if (app()->environment() == 'production') {
+            Log::build([
+                'driver' => 'single',
+                'path' => storage_path('logs/response.log'),
+            ])->info(json_encode($this->response));
+        }
         return $this->response;
     }
 
     /*
     * DATA STATUS
     */
-
     protected function found(): void
     {
         $this->response = response()->json([
@@ -58,7 +61,10 @@ abstract class BaseResponder
 
     protected function deleted(): void
     {
-        $this->renderResult();
+        $this->response = response()->json([
+            'status' => true,
+            'messages' => $this->payload->getResult()['messages'] ?? 'Success Deleted'
+        ]);
     }
 
     protected function restored(): void
@@ -75,7 +81,7 @@ abstract class BaseResponder
             ->json([
                 'status'    => false,
                 'messages'  => $this->payload->getResult()['messages'],
-                'data'      => Arr::except($this->payload->getResult()['data'], '_method')
+                'data'      => $this->payload->getResult()['data']
             ], 400);
     }
 
@@ -88,76 +94,32 @@ abstract class BaseResponder
             ], 404)
         );
     }
-    protected function eventNotFound(): void
+
+    protected function protectedResource(): void
     {
-        $this->response = abort(
-            response()->json([
-                'status'    => false,
-                'messages'  => 'Event-ID : ' . $this->payload->getResult()['event_id'] . ' not found !!'
-            ], 404)
-        );
+        $this->response = response()->json([
+            'messages' => 'Cant modify this protected Resources'
+        ], 403);
     }
-    protected function noActiveEvent(): void
+    // THROTTLED
+    protected function throttled(): void
     {
-        $this->response = abort(
-            response()->json([
-                'status'    => false,
-                'messages'  => 'No active event, please create or activate one'
-            ], 400)
-        );
-    }
-    protected function slugNotFound(): void
-    {
-        $this->response = abort(
-            response()->json([
-                'status'    => false,
-                'messages'  => 'Slug : ' . $this->payload->getResult()['slug'] . ' not found !!'
-            ], 404)
-        );
-    }
-    protected function assetNotFound(): void
-    {
-        $this->response = abort(
-            response()->json([
-                'status'    => false,
-                'messages'  => 'Asset : ' . $this->payload->getResult()['asset'] . ' not found !!'
-            ], 404)
-        );
+        $this->response = response()->json([
+            'messages' => 'Too many request, please try again later'
+        ], 429);
     }
 
     /*
     * OTHER STATUS
     */
-    protected function unauthorized(): void
-    {
-        $this->response = abort(response()->json(['messages' => 'Unauthorized']));
-    }
-    protected function forbidden(): void
-    {
-        $this->response = abort(response()->json(['messages' => 'Forbidden'], 403));
-    }
-    protected function notOwner(): void
-    {
-        $this->response = abort(
-            response()->json(
-                [
-                    'status' => false,
-                    'messages' => 'Cant modify, You are not own this resource'
-                ],
-                403
-            )
-        );
-    }
-    protected function protectedResource(): void
-    {
-        $this->response = abort(response()->json(['messages' => 'Cant modify protected resource'], 403));
-    }
 
     protected function error(): void
     {
-        $e = $this->payload->getResult()['exception'];
         $this->response = abort(
-            response()->json($e, 505)
+            response()->json([
+                'status' => false,
+                'messages' => $this->payload->getResult()['exception']
+            ], $this->payload->getResult()['code'])
         );
     }
 
@@ -176,51 +138,5 @@ abstract class BaseResponder
     {
         $domain_status = $this->payload->getStatus();
         $this->response = abort(501, sprintf('Unknown method (%s) for payload status: \'%s\'', Str::camel($domain_status), $domain_status));
-    }
-
-    protected function noData(): void
-    {
-        $this->response = abort(response()->json([], 204));
-    }
-
-    protected function downloadAndRemove(): void
-    {
-        $this->response = response()->download(
-            public_path(
-                'storage/' . $this->payload->getResult()['path']
-            )
-        )->deleteFileAfterSend();
-    }
-
-    protected function expired(): void
-    {
-        $this->response = response()->json([
-            'status' => false,
-            'messsages' => 'Expired'
-        ], 410);
-    }
-
-    protected function hasRecord(): void
-    {
-        $this->response = response()->json([
-            'status' => false,
-            'messsages' => 'Cant perform this action, already have an record'
-        ], 409);
-    }
-    /**
-     * Password confirmation
-     */
-    protected function passwordConfirmTrue(): void
-    {
-        $this->response = response()->json([
-            'status' => true
-        ], 204);
-    }
-    protected function passwordConfirmFalse(): void
-    {
-        $this->response = response()->json([
-            'status' => false,
-            'messages' => 'Your login information you entered did not matched our records. Please double check and try again'
-        ], 401);
     }
 }

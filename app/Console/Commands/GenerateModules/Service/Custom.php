@@ -5,6 +5,7 @@ namespace App\Console\Commands\GenerateModules\Service;
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 
 class Custom extends GeneratorCommand
 {
@@ -52,20 +53,26 @@ class Custom extends GeneratorCommand
      */
     protected function buildClass($name)
     {
+        $moduleType = $this->option('type');
         $this->callSilently('generate:api-custom', [
             'name' => Str::studly($this->argument('name')),
             'namespace' => Str::studly($this->argument('namespace')),
+            '--revision' => $this->option('revision'),
+            '--force' => $this->option('force')
         ]);
 
         $custom = class_basename($name);
         $customNamespace = class_basename($this->argument('namespace'));
 
+        $version = "V{$this->option('revision')}";
+        $namespace = "Modules\\{$version}\\" . Str::studly($customNamespace) . "\\Domain\\Service";
         $replace = [
-            '{{ customServiceNamespace }}' => $this->rootNamespace() . 'Modules\\' . Str::studly($customNamespace) . '\\Domain\\Service',
-            '{{ service }}' => $custom,
-            '{{service}}' => Str::camel($custom),
-            '{{ pathNamespace }}' => Str::studly($customNamespace),
-            '{{pathNamespace}}' => Str::camel($customNamespace)
+            '{$customServiceNamespace}' => $this->rootNamespace() . $namespace,
+            '{$service}' => $custom,
+            '{$serviceCamel}' => Str::camel($custom),
+            '{$pathNamespaceStudly}' => Str::studly($customNamespace),
+            '{$pathNamespaceCamel}' => Str::camel($customNamespace),
+            '{$version}' => $version
         ];
 
         return str_replace(
@@ -84,8 +91,10 @@ class Custom extends GeneratorCommand
     {
         $name = (string) Str::of($name)->replaceFirst($this->rootNamespace(), '');
         $namespace = (string) Str::of($this->argument('namespace'))->replaceFirst($this->rootNamespace(), '');
+        $version = "v{$this->option('revision')}";
+        $path = "/app/Modules/{$version}/" . Str::studly($namespace) . "/Domain/Service/{$name}.php";
 
-        return $this->laravel->basePath('app/Modules/') . Str::studly($namespace) . '/Domain/Service/' . $name . '.php';
+        return $this->laravel->basePath() . $path;
     }
     /**
      * Get the console command arguments.
@@ -97,6 +106,18 @@ class Custom extends GeneratorCommand
         return [
             ['name', InputArgument::REQUIRED, 'The name of the class'],
             ['namespace', InputArgument::REQUIRED, 'The namespace of the class'],
+        ];
+    }
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
+    protected function getOptions()
+    {
+        return [
+            ['force', 'f', InputOption::VALUE_NONE, 'Force Rewrite File'],
+            ['revision', 'r', InputOption::VALUE_REQUIRED, 'Version Resource Module', config('app-config.version')],
         ];
     }
 }

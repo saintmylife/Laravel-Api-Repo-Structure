@@ -1,20 +1,15 @@
 <?php
 
-namespace {{ deleteApiNamespace }};
+namespace {$deleteApiNamespace};
 
 use App\Http\Controllers\Controller;
-use App\Modules\{{ api }}\Domain\Service\{{ api }}Delete;
-use App\Modules\{{ api }}\Api\Responder\{{ api }}Responder;
+use App\Modules\{$version}\{$api}\Api\Responder\{$api}Responder;
+use App\Modules\{$version}\{$api}\Domain\Service\{$api}Delete;
 
-class {{ api }}DeleteAction extends Controller
+class {$api}DeleteAction extends Controller
 {
-    private $domain;
-    private $responder;
-
-    public function __construct({{ api }}Delete $domain, {{ api }}Responder $responder)
+    public function __construct(private {$api}Delete $domain,private {$api}Responder $responder)
     {
-        $this->domain = $domain;
-        $this->responder = $responder;
     }
 
     public function __invoke(int $id)

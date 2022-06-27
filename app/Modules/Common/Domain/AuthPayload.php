@@ -2,38 +2,46 @@
 
 namespace App\Modules\Common\Domain;
 
-use App\Modules\Common\Domain\Payload;
-
-class AuthPayload extends Payload
+interface AuthPayload
 {
-    /** Valid user credentials. */
-    const STATUS_AUTHENTICATED = 'AUTHENTICATED';
-    /** Invalid data request. */
+    /** Logged In Successfully */
+    const STATUS_AUTH_LOGGED_IN = 'AUTH_LOGGED_IN';
+    /** Logged Out Successfully */
+    const STATUS_AUTH_LOGGED_OUT = 'AUTH_LOGGED_OUT';
+    /** Credentials Found */
+    const STATUS_AUTH_FOUND = 'AUTH_FOUND';
+    /** Auth Expired */
+    const STATUS_AUTH_EXPIRED = 'AUTH_EXPIRED';
+    /** Auth Transient Token Success */
+    const STATUS_AUTH_TRANSIENT = 'AUTH_TRANSIENT';
+    /** Auth Not Valid */
     const STATUS_AUTH_NOT_VALID = 'AUTH_NOT_VALID';
-    /** Invalid user credentials. */
-    const STATUS_AUTH_FAILED = 'AUTH_FAILED';
-    /** Authorization token not found */
-    const STATUS_AUTH_TOKEN_NOT_FOUND = 'AUTH_TOKEN_NOT_FOUND';
-    /** Invalid or expired token */
-    const STATUS_AUTH_TOKEN_INVALID = 'AUTH_TOKEN_INVALID';
-    /** Logout user. */
-    const STATUS_AUTH_LOGOUT = 'AUTH_LOGOUT';
-    /** Failed to Verify User */
-    const STATUS_AUTH_VERIFY_FAILED = 'AUTH_VERIFY_FAILED';
-    /** Success Verify User */
-    const STATUS_AUTH_VERIFY_SUCCESS = 'AUTH_VERIFY_SUCCESS';
-    /** Send Email Notification */
+    /** User Not Verified */
+    const STATUS_AUTH_NOT_VERIFIED = 'AUTH_NOT_VERIFIED';
+    /** Auth Verify OTP Already */
+    const STATUS_AUTH_VERIFY_OTP_ALREADY = 'AUTH_VERIFY_OTP_ALREADY';
+    /** Auth Verify OTP Expired */
+    const STATUS_AUTH_VERIFY_OTP_EXPIRED = 'AUTH_VERIFY_OTP_EXPIRED';
+    /** Auth Verify OTP Success */
+    const STATUS_AUTH_VERIFY_OTP_SUCCESS = 'AUTH_VERIFY_OTP_SUCCESS';
+    /** Auth Send Email */
     const STATUS_AUTH_SEND_EMAIL = 'AUTH_SEND_EMAIL';
-    /** Old password is not same */
-    const STATUS_AUTH_CHANGE_PASSWORD_FAILED = 'AUTH_CHANGE_PASSWORD_FAILED';
-    /** Success change password */
-    const STATUS_AUTH_CHANGE_PASSWORD_SUCCESS = 'AUTH_CHANGE_PASSWORD_SUCCESS';
-    /** Reset password failed */
+    /** Reset Password Failed */
     const STATUS_AUTH_RESET_PASSWORD_FAILED = 'AUTH_RESET_PASSWORD_FAILED';
-    /** Reset password success */
+    /** Reset Password Success */
     const STATUS_AUTH_RESET_PASSWORD_SUCCESS = 'AUTH_RESET_PASSWORD_SUCCESS';
-    /** Confirm password is same */
-    const STATUS_AUTH_CONFIRM_PASSWORD = 'AUTH_CONFIRM_PASSWORD';
-    /** Clear Cookies */
-    const STATUS_AUTH_CLEAR_COOKIES = 'AUTH_CLEAR_COOKIES';
+    /** Change Password Success */
+    const STATUS_AUTH_CHANGE_PASSWORD_SUCCESS = 'AUTH_CHANGE_PASSWORD_SUCCESS';
+    /** Auth Password Confirm */
+    const STATUS_AUTH_PASSWORD_CONFIRM = 'AUTH_PASSWORD_CONFIRM';
+    /** Unautorized User */
+    const STATUS_UNAUTHORIZED = 'UNAUTHORIZED';
+    /** Guest User */
+    const STATUS_AUTH_GUEST_USER = 'AUTH_GUEST_USER';
+    /** Forbidden access */
+    const STATUS_FORBIDDEN = 'FORBIDDEN';
+    /** Determine if resource isnt owner */
+    const STATUS_NOT_OWNER = 'NOT_OWNER';
+    /** Determine if resource is protected */
+    const STATUS_PROTECTED_RESOURCE = 'PROTECTED_RESOURCE';
 }

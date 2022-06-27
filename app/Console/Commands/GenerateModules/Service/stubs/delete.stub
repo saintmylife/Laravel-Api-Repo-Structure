@@ -1,29 +1,24 @@
 <?php
 
-namespace {{ deleteServiceNamespace }};
+namespace {$deleteServiceNamespace};
 
-use App\Modules\{{ service }}\Repository\{{ service }}RepoInterface;
+use App\Modules\{$version}\{$service}\Repository\{$service}Repository;
 use App\Modules\Base\Domain\BaseService;
 use App\Modules\Common\Domain\Payload;
 
-class {{ service }}Delete extends BaseService
+class {$service}Delete extends BaseService
 {
-    private $fetch;
-    private $repo;
-
-    public function __construct({{ service }}Fetch $fetch,{{ service }}RepoInterface $repo)
+    public function __construct(private {$service}Fetch $fetch, private {$service}Repository $repo)
     {
-        $this->fetch = $fetch;
-        $this->repo = $repo;
     }
 
     public function __invoke(int $id): Payload
     {
-        if((${{service}} = $this->fetch->__invoke($id))->getStatus() != 'FOUND'){
-            return ${{service}};
+        if((${$serviceCamel} = $this->fetch->__invoke($id))->getStatus() != 'FOUND'){
+            return ${$serviceCamel};
         }
         $this->repo->delete($id);
-        $message = '{{service}} deleted';
-        return $this->newPayload(Payload::STATUS_DELETED, compact('message'));
+        $messages = '{$serviceCamel} deleted';
+        return $this->newPayload(Payload::STATUS_DELETED, compact('messages'));
     }
 }

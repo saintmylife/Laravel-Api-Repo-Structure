@@ -1,34 +1,28 @@
 <?php
 
-namespace {{ customServiceNamespace }};
+namespace {$customServiceNamespace};
 
-use App\Modules\{{ pathNamespace }}\{{ pathNamespace }}Dto;
-use App\Modules\{{ pathNamespace }}\Domain\{{ pathNamespace }}Filter;
-use App\Modules\{{ pathNamespace }}\Repository\{{ pathNamespace }}RepoInterface;
+use App\Modules\{$version}\{$pathNamespaceStudly}\{$pathNamespaceStudly}Dto;
+use App\Modules\{$version}\{$pathNamespaceStudly}\Domain\{$pathNamespaceStudly}Filter;
+use App\Modules\{$version}\{$pathNamespaceStudly}\Repository\{$pathNamespaceStudly}Repository;
 use App\Modules\Base\Domain\BaseService;
 use App\Modules\Common\Domain\Payload;
 
-class {{ service }} extends BaseService
+class {$service} extends BaseService
 {
-    private $filter;
-    private $repo;
-
-    public function __construct({{ pathNamespace }}Filter $filter, {{ pathNamespace }}RepoInterface $repo)
+    public function __construct(private {$pathNamespaceStudly}Filter $filter, private {$pathNamespaceStudly}Repository $repo)
     {
-        $this->filter = $filter;
-        $this->repo = $repo;
     }
 
     public function __invoke(array $data): Payload
     {
-        ${{pathNamespace}}Dto = $this->makeDto($data, new {{ pathNamespace }}Dto);
-
-        if (!$this->filter->forInsert(${{pathNamespace}}Dto)) {
-            $messages = $this->filter->getMessages();
+        if (!$this->filter->forInsert($data)) {
+            $messages = $this->filter->getValidationMessage();
             return $this->newPayload(Payload::STATUS_NOT_VALID, compact('data', 'messages'));
         }
+        ${$pathNamespaceCamel}Dto = new {$pathNamespaceStudly}Dto($this->filter->getValidatedData());
 
-        $create = $this->repo->create(${{pathNamespace}}Dto->getData());
+        $create = $this->repo->create(${$pathNamespaceCamel}Dto->getData());
 
         return $this->newPayload(Payload::STATUS_CREATED, compact('create'));
     }

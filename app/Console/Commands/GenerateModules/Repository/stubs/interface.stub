@@ -1,7 +1,9 @@
 <?php
 
-namespace {{ interfaceNamespace }};
+namespace {$interfaceNamespace};
 
-interface {{ interface }}RepoInterface
+use Prettus\Repository\Contracts\RepositoryInterface;
+
+interface {$interface}Repository extends RepositoryInterface
 {
 }

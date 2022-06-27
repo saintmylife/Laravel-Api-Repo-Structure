@@ -3,7 +3,6 @@
 namespace App\Console\Commands\GenerateModules;
 
 use Illuminate\Console\GeneratorCommand;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
@@ -38,18 +37,6 @@ class GenerateJob extends GeneratorCommand
      * @var string
      */
     protected $type = 'Job Module';
-
-    /**
-     * Execute the console command.
-     *
-     * @return void
-     */
-    public function handle()
-    {
-        if (parent::handle() === false && !$this->option('force')) {
-            return false;
-        }
-    }
     /**
      * Get the stub file for the generator.
      *
@@ -68,13 +55,12 @@ class GenerateJob extends GeneratorCommand
     protected function buildClass($name)
     {
         $job = class_basename($name);
-        $module = $this->argument('module');
-
+        $module = \Str::studly($this->argument('module'));
+        $version = "V{$this->option('revision')}";
+        $namespace = "Modules\\{$version}\\{$module}\\Domain\\Jobs";
         $replace = [
-            '{{ jobNamespace }}' => $this->rootNamespace() . 'Modules\\' . $module . '\\Jobs',
-            '{{ job }}' => $job,
-            '{{ repoNamespace }}' => $this->rootNamespace() . 'Modules\\' . $module . '\\Repository\\' . $module . 'RepoInterface',
-            '{{ repo }}' => $module
+            '{$jobNamespace}' => $this->rootNamespace() . $namespace,
+            '{$job}' => $job,
         ];
 
         return str_replace(
@@ -92,8 +78,11 @@ class GenerateJob extends GeneratorCommand
     protected function getPath($name)
     {
         $name = (string) Str::of($name)->replaceFirst($this->rootNamespace(), '');
-
-        return $this->laravel->basePath('app/Modules/') . $this->argument('module') . '/Jobs/' . $name . '.php';
+        if (!$this->option('revision')) {
+            $this->input->setOption('revision', $this->ask('What version of the module ?', config('app-config.version')));
+        }
+        $path = "/app/Modules/V{$this->option('revision')}/{$this->argument('module')}/Domain/Jobs/{$name}.php";
+        return $this->laravel->basePath() . $path;
     }
     /**
      * Get the console command arguments.
@@ -105,5 +94,11 @@ class GenerateJob extends GeneratorCommand
         $args = parent::getArguments();
         array_push($args, ['module', InputArgument::REQUIRED, 'The module name of the job for repository binding']);
         return $args;
+    }
+    protected function getOptions()
+    {
+        return [
+            ['revision', 'r', InputOption::VALUE_NONE, 'Version Resource Module'],
+        ];
     }
 }

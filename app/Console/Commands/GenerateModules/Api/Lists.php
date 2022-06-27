@@ -4,6 +4,7 @@ namespace App\Console\Commands\GenerateModules\Api;
 
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Str;
+use Symfony\Component\Console\Input\InputOption;
 
 class Lists extends GeneratorCommand
 {
@@ -53,10 +54,13 @@ class Lists extends GeneratorCommand
     protected function buildClass($name)
     {
         $list = class_basename($name);
+        $version = "V{$this->option('revision')}";
+        $namespace = "Modules\\{$version}\\{$list}\\Api\\Action";
 
         $replace = [
-            '{{ listApiNamespace }}' => $this->rootNamespace() . 'Modules\\' . $list . '\\Api\\Action',
-            '{{ api }}' => $list
+            '{$listApiNamespace}' => $this->rootNamespace() . $namespace,
+            '{$api}' => $list,
+            '{$version}' => $version
         ];
 
         return str_replace(
@@ -74,7 +78,21 @@ class Lists extends GeneratorCommand
     protected function getPath($name)
     {
         $name = (string) Str::of($name)->replaceFirst($this->rootNamespace(), '');
+        $version = "v{$this->option('revision')}";
+        $path = "/app/Modules/{$version}/{$name}/Api/Action/{$name}ListAction.php";
 
-        return $this->laravel->basePath('app/Modules/') . $name . '/Api/Action/' . $name . 'ListAction.php';
+        return $this->laravel->basePath() . $path;
+    }
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
+    protected function getOptions()
+    {
+        return [
+            ['force', 'f', InputOption::VALUE_NONE, 'Force Rewrite File'],
+            ['revision', 'r', InputOption::VALUE_REQUIRED, 'Version Resource Module', config('app-config.version')],
+        ];
     }
 }

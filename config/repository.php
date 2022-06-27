@@ -34,7 +34,8 @@ return [
         'params'     => [
             'include' => 'include'
         ],
-        'serializer' => League\Fractal\Serializer\DataArraySerializer::class
+        // 'serializer' => League\Fractal\Serializer\DataArraySerializer::class
+        'serializer' => App\Modules\Base\Repository\BaseDataArraySerializer::class
     ],
 
     /*
@@ -230,17 +231,20 @@ return [
     'generator'  => [
         'basePath'      => app()->path(),
         'rootNamespace' => 'App\\',
-        'stubsOverridePath' => app()->path(),
+        'stubsOverridePath' => app()->path() . '/Modules/Base/Generator',
         'paths'         => [
-            'models'       => 'Entities',
-            'repositories' => 'Repositories',
-            'interfaces'   => 'Repositories',
+            'models'       => 'Repository',
+            'repositories' => 'Repository',
+            'interfaces'   => 'Repository',
             'transformers' => 'Transformers',
             'presenters'   => 'Presenters',
             'validators'   => 'Validators',
             'controllers'  => 'Http/Controllers',
             'provider'     => 'RepositoryServiceProvider',
             'criteria'     => 'Criteria'
-        ]
+        ],
+        // 'stub' => [
+        //     'repositories' => 'eloquent.stub'
+        // ]
     ]
 ];
